@@ -110,8 +110,8 @@
 <section id="vec" class="red">
 <header>Variable sized arrays / Vectors</header>
 
-<div><code>let mut vec = Vec::new&lt;T&gt;();</code></div>
-<div><code>            = Vec::with_capacity&lt;T&gt;();</code></div>
+<div><code>let mut vec: Vec&lt;T&gt; = Vec::new();</code></div>
+<div><code>            = Vec::with_capacity();</code></div>
 <div><code>            = vec![];</code></div>
 <div><code>vec[3];</code><details></details></div>
 <div><code>vec.len()</code><details></details></div>
@@ -185,8 +185,8 @@
 <section id="vec" class="green">
 <header>Hashmaps / Dicts</header>
 
-<div><code>let mut hashmap = HashMap::new&lt;K,V&gt;();</code></div>
-<div><code>                = HashMap::with_capacity&lt;K,V&gt;();</code><details>K:Eq, Hash</details></div>
+<div><code>let mut hashmap: HashMap&lt;K,V&gt; = HashMap::new();</code></div>
+<div><code>                = HashMap::with_capacity();</code><details>K:Eq, Hash</details></div>
 <div><code>hashmap[key];</code><details></details></div>
 <div><code>hashmap.len()</code><details></details></div>
 <div><code>   .contains_key(key)</code><details>-&gt; bool</details></div>
