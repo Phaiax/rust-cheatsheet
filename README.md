@@ -3,7 +3,7 @@
 Rust Cheatsheet
 ===============
 
-[A HTML, still growing, extensive Rust cheatsheet][http://phaiax.github.io/rust-cheatsheet/].
+[A HTML, still growing, extensive Rust cheatsheet](http://phaiax.github.io/rust-cheatsheet/).
 
 This cheatsheet is more about the standard library than about language features.
 
