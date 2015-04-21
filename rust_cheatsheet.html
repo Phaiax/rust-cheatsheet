@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rust Cheatsheet</title>
+
+    <style type="text/css">
+    body {
+        font-family: Arial, Helvetica, Sans;
+        font-size: 1em;
+    }
+
+    .hide {
+        display: none;
+    }
+
+    section {
+        border: 1px solid black;
+        width: 20%;
+        box-shadow: inset 0px 0px 4px #666;
+        padding: 0 0 2px 0;
+    }
+    section header {
+        font-family: "Nimbus Sans L";
+        font-weight: bold;
+        text-align: center;
+        border-bottom: 1px solid black;
+        padding: 3px;
+        font-size: 0.8em;
+    }
+    section div {
+        padding: 0px 8px ;
+        clear: right;
+    }
+    section div:nth-child(even) {
+        background-color: rgba(0, 0, 0, 0.01);
+    }
+    section div code {
+        white-space: pre;
+        font-size: 0.7em;
+        font-family: "Nimbus Sans L";
+        font-weight: bold;
+        line-height: 0.4em;
+    }
+    section div span {
+        color: #53dafc;
+    }
+    section div details {
+        display: block;
+        //line-height: 0.4em;
+        float: right;
+        padding-top: 0.4em;
+        font-size: 0.7em;
+        color: #555;
+        text-align: right;
+    }
+
+    section hr {
+        margin: 0px 0px -2px 0px;
+        border: 0;
+        height: 0;
+        border-top: 1px solid rgba(0, 0, 0, 0.3);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        clear: right;
+
+    }
+    /* COLORS */
+    section.red header {
+        background-image: linear-gradient(to right bottom, #E07F7F 0%, #FFAB7A 51%);
+    }
+    section.red {
+        background-color: #f7dcdc;
+    }
+
+    div.unstable code {
+        color: #999;
+    }
+
+    </style>
+</head>
+<body>
+
+<header>Rust Cheatsheet</header>
+
+<section id="vec" class="red">
+<header>Variable sized arrays / Vectors</header>
+
+<div><code>let mut vec = Vec::new&lt;T&gt;();</code></div>
+<div><code>            = Vec::with_capacity&lt;T&gt;();</code></div>
+<div><code>            = vec![];</code></div>
+<div><code>vec[3];</code><details></details></div>
+<div><code>vec.len()</code><details></details></div>
+<div><code>   .first<span>_mut</span>() .last<span>_mut</span>()</code><details>-&gt; Option</details></div>
+<div><code>   .get<span>_mut</span>()</code><details>-&gt; Option</details></div>
+<div><code>   .is_empty();</code><details></details></div>
+<div><code>   .hash(state: Hasher)</code><details>if T:Hash</details></div>
+<hr><hr class="hide">
+<div><code>   .push(3);</code><details>to end</details></div>
+<div><code>   .insert(index, element);</code><details></details></div>
+<div><code>   .extend(iterable)</code><details></details></div>
+<div class="unstable hide"><code>   .push_all(&[1, 2, 3]);</code><details></details></div>
+<div class="unstable hide"><code>   .append(vec![]);</code><details></details></div>
+<div><code>   .clone()</code><details>if T:Clone</details></div>
+<div><code>   .clone_from()</code><details>if T:Clone</details></div>
+<hr><hr class="hide">
+<div><code>   .pop()</code><details></details></div>
+<div><code>   .remove(index);</code><details>-&gt; el, shifts left</details></div>
+<div><code>   .swap_remove(index);</code><details>-&gt; el, fills with last</details></div>
+<div><code>   .truncate(i);</code><details>cut until .len() = i</details></div>
+<div class="unstable hide"><code>   .drain();</code><details>-&gt; iter that drains</details></div>
+<div><code>   .clear();</code><details></details></div>
+<div><code>   .retain(|i| -&gt; bool);</code><details>in place</details></div>
+<div><code>   .dedup();</code><details>removes duplicates (if T:PartialEq)</details></div>
+<div><code>   .sort()</code><details>in place</details></div>
+<div><code>   .reverse()</code><details>in place</details></div>
+<div><code>   .swap(index1, index2)</code><details></details></div>
+<div class="unstable hide"><code>   .map_in_place(|i| ..)</code><details></details></div>
+<hr><hr class="hide">
+<div><code>   .ends_with(needle)</code><details></details></div>
+<div><code>   .starts_with(needle)</code><details></details></div>
+<div><code>   .contains(needle)</code><details>-&gt; bool</details></div>
+<div><code>   .binary_search(n)</code><details>-&gt; Result&lt;usize, usize&gt;<br>Ok(i): pos, Err(i): pos for insertion</details></div>
+<div><code>   .binary_search_by(||->Ordering)</code><details></details></div>
+<hr><hr class="hide">
+<div><code>   .capacity();</code><details></details></div>
+<div><code>   .reserve(100);</code><details>in addition to .len() or more</details></div>
+<div><code>   .reserve_exact(100);</code><details>in addition to .len()</details></div>
+<div><code>   .shrink_to_fit();</code><details></details></div>
+<hr><hr class="hide">
+<div><code>   .into_boxed_slice()</code><details>-&gt; Box&lt;T&gt;</details></div>
+<div><code>   .as_ref();</code><details>-&gt; &amp;[T] or &amp;Vec&lt;T&gt;</details></div>
+<div><code>   .to_vec()</code><details>like clone(), if T:Clone</details></div>
+<div class="unstable hide"><code>   .as_slice()</code><details>-&gt; &amp;[T]</details></div>
+<div class="unstable hide"><code>   .as_mut_slice()</code><details>-&gt; &amp;mut [T]</details></div>
+<div><code>   .into_cow();</code><details>Cow: clone on write</details></div>
+<hr><hr class="hide">
+<div><code>   .iter<span>_mut</span>();</code><details> or into_iter()</details></div>
+<div><code>   .chunks<span>_mut</span>(cnk_sz)</code><details>-&gt; iter over a non overlapping slice at a time</details></div>
+<div><code>   .windows(wnd_sz)</code><details>-&gt; iter over an overlapping slice at a time</details></div>
+<hr><hr class="hide">
+<div><code>   .split_at<span>_mut</span>(mid)</code><details>-&gt; (p1, p2), [mid] in 2nd part</details></div>
+<div><code>   .<span>r</span>split<span>n_mut</span>(<span>n</span>, || -&gt; bool)</code><details>-&gt; iter over <span>mutable</span> subslices,<br> seperated by ||-&gt;true, <span>at most n times</span></details></div>
+<div class="unstable hide"><code>   .split_off(at_index)</code><details></details></div>
+<hr><hr class="hide">
+<div><code>.cmp() .eq() .ne()</code><details>T: PartialEq</details></div>
+<div><code>.lt() .le() .gt() .ge()</code><details>if T:PartialOrd</details></div>
+<hr><hr class="hide">
+<div><code>boxedvec.into_vec()</code><details>-&gt; &amp;Vec&lt;T&gt;</details></div>
+<div><code>vecslice.hash_slice(state:Hasher)</code><details></details></div>
+<div><code>Vec::from(str|clonable)</code><details></details></div>
+<hr><hr class="hide">
+
+<div>Traits: <code>IntoIterator</code>, <code>FromIterator</code>, <code>IntoCow</code>, <code>Debug (if T:Debug)</code>, <code>Default</code>, <code>Drop</code>, <code>Add</code>, <code>Extend</code>, <code>Deref<span>Mut</span></code>, <code>Index<span>Mut</span></code></div>
+
+
+<div class="hide">
+    vec[0] = 7;
+
+
+    for x in vec.iter() {
+        println!("{}", x);
+    }
+
+
+Drop, Cow, Add
+</div>
+</section>
+
+</body>
+</html>
