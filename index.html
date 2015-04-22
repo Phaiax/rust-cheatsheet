@@ -159,7 +159,8 @@
 <div class="unstable hide"><code>   .as_mut_slice()</code><details>-&gt; &amp;mut [T]</details></div>
 <div><code>   .into_cow();</code><details>Cow: clone on write</details></div>
 <hr><hr class="hide">
-<div><code>   .iter<span>_mut</span>();</code><details> or into_iter()</details></div>
+<div><code>   .iter<span>_mut</span>();</code><details title="borrows value">-&gt;&<span>mut </span>T, keeps vector</details></div>
+<div><code>   .into_iter();</code><details title="transfers ownership">-&gt;T, consumes vector</details></div>
 <div><code>   .chunks<span>_mut</span>(cnk_sz)</code><details>-&gt; iter over a non overlapping slice at a time</details></div>
 <div><code>   .windows(wnd_sz)</code><details>-&gt; iter over an overlapping slice at a time</details></div>
 <hr><hr class="hide">
@@ -185,10 +186,11 @@
 <section id="vec" class="green">
 <header>Hashmaps / Dicts</header>
 
-<div><code>let mut hashmap: HashMap&lt;K,V&gt; = HashMap::new();</code></div>
+<div><code>use std::collections::HashMap;</code></div>
+<div><code>let mut foo: HashMap&lt;K,V&gt; = HashMap::new();</code></div>
 <div><code>                = HashMap::with_capacity();</code><details>K:Eq, Hash</details></div>
-<div><code>hashmap[key];</code><details></details></div>
-<div><code>hashmap.len()</code><details></details></div>
+<div><code>foo[key];</code><details></details></div>
+<div><code>foo.len()</code><details></details></div>
 <div><code>   .contains_key(key)</code><details>-&gt; bool</details></div>
 <div><code>   .get<span>_mut</span>(key)</code><details>-&gt; Option</details></div>
 <div><code>   .entry(key)</code><details>-&gt; Entry&lt;..&gt;, for insertion or in-place manipulation</details></div>
