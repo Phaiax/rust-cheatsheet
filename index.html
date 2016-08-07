@@ -105,7 +105,7 @@
         color: #999;
     }
 
-    div.docblock {
+    div.outerdoc {
         display: none;
     }
 
@@ -163,129 +163,10 @@
 
 <section id="vec" class="red">
 <header>Variable sized arrays / Vectors</header>
-<div><code>let mut vec: Vec&lt;T&gt; = Vec::new();</code><details></details></div>
-    <div class="docblock"><h4 id="method.new" class="method"><code>fn <a class="fnname" href="#method.new">new</a>() -> <a class="struct" target="_blank" href="https://doc.rust-lang.org/std/vec/struct.Vec.html" title="std::vec::Vec">Vec</a><T></code></h4><p>Constructs a new, empty <code>Vec<T></code>.</p>
+<div><a data-doc="vec.new"><code>let mut vec: Vec&lt;T&gt; = Vec::new();</code></a><details></details></div>
+    <div><a data-doc="vec.with_capacity"><code>            = Vec::with_capacity();</code></a><details></details></div>
+    <div><a data-doc="vec.initmacro"><code>            = vec![];</code></a><details></details></div>
     
-    <p>The vector will not allocate until elements are pushed onto it.</p>
-    
-    <h1 id="examples-1" class="section-header"><a href="#examples-1">Examples</a></h1>
-    <span class="rusttest">fn main() {
-        #![allow(unused_mut)]
-        let mut vec: Vec<i32> = Vec::new();
-    }</span><pre class="rust rust-example-rendered"><span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">vec</span>: <span class="ident">Vec</span><span class="op"><</span><span class="ident">i32</span><span class="op">></span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();</pre>
-    </div><div><code>            = Vec::with_capacity();</code><details></details></div>
-    <div class="docblock"><h4 id="method.with_capacity" class="method"><code>fn <a class="fnname" href="#method.with_capacity">with_capacity</a>(capacity: <a href="../primitive.usize.html" class="primitive">usize</a>) -> <a class="struct" title="std::vec::Vec" target="_blank" href="https://doc.rust-lang.org/std/vec/struct.Vec.html">Vec</a><T></code></h4><p>Constructs a new, empty <code>Vec<T></code> with the specified capacity.</p>
-    
-    <p>The vector will be able to hold exactly <code>capacity</code> elements without
-    reallocating. If <code>capacity</code> is 0, the vector will not allocate.</p>
-    
-    <p>It is important to note that this function does not specify the <em>length</em>
-    of the returned vector, but only the <em>capacity</em>. (For an explanation of
-    the difference between length and capacity, see the main <code>Vec<T></code> docs
-    above, 'Capacity and reallocation'.)</p>
-    
-    <h1 class="section-header" id="examples-2"><a href="#examples-2">Examples</a></h1>
-    <span class="rusttest">fn main() {
-        let mut vec = Vec::with_capacity(10);
-        
-        // The vector contains no items, even though it has capacity for more
-        assert_eq!(vec.len(), 0);
-        
-        // These are all done without reallocating...
-        for i in 0..10 {
-            vec.push(i);
-        }
-        
-        // ...but this may make the vector reallocate
-        vec.push(11);
-    }</span><pre class="rust rust-example-rendered"><span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">vec</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">with_capacity</span>(<span class="number">10</span>);
-    
-    <span class="comment">// The vector contains no items, even though it has capacity for more</span>
-    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">vec</span>.<span class="ident">len</span>(), <span class="number">0</span>);
-    
-    <span class="comment">// These are all done without reallocating...</span>
-    <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">10</span> {
-        <span class="ident">vec</span>.<span class="ident">push</span>(<span class="ident">i</span>);
-    }
-    
-    <span class="comment">// ...but this may make the vector reallocate</span>
-    <span class="ident">vec</span>.<span class="ident">push</span>(<span class="number">11</span>);</pre>
-    </div><div><a target="_blank" href="https://doc.rust-lang.org/std/macro.vec!.html"><code>            = vec![];</code></a><details></details></div>
-<div><code>vec[3];</code><details></details></div>
-<div class="docblock"><h1 id="indexing" class="section-header"><a href="#indexing">Indexing</a></h1>
-<p>The Vec type allows to access values by index, because it implements the
-<code>Index</code> trait. An example will be more explicit:</p>
-
-<span class="rusttest">fn main() {
-    let v = vec!(0, 2, 4, 6);
-    println!("{}", v[1]); // it will display '2'
-}</span><pre class="rust rust-example-rendered"><span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>(<span class="number">0</span>, <span class="number">2</span>, <span class="number">4</span>, <span class="number">6</span>);
-<span class="macro">println</span><span class="macro">!</span>(<span class="string">"{}"</span>, <span class="ident">v</span>[<span class="number">1</span>]); <span class="comment">// it will display '2'</span></pre>
-
-<p>However be careful: if you try to access an index which isn't in the Vec,
-your software will panic! You cannot do this:</p>
-
-<span class="rusttest">fn main() {
-    let v = vec!(0, 2, 4, 6);
-    println!("{}", v[6]); // it will panic!
-}</span><pre class="rust rust-example-rendered"><span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>(<span class="number">0</span>, <span class="number">2</span>, <span class="number">4</span>, <span class="number">6</span>);
-<span class="macro">println</span><span class="macro">!</span>(<span class="string">"{}"</span>, <span class="ident">v</span>[<span class="number">6</span>]); <span class="comment">// it will panic!</span></pre>
-
-<p>In conclusion: always check if the index you want to get really exists
-before doing it.</p>
-
-</div><div><code>vec.len()</code><details></details></div>
-    <div class="docblock"><h4 class="method" id="method.len"><code>fn <a href="#method.len" class="fnname">len</a>(&self) -> <a class="primitive" href="../primitive.usize.html">usize</a></code></h4><p>Returns the number of elements in the vector.</p>
-    
-    <h1 id="examples-19" class="section-header"><a href="#examples-19">Examples</a></h1>
-    <span class="rusttest">fn main() {
-        let a = vec![1, 2, 3];
-        assert_eq!(a.len(), 3);
-    }</span><pre class="rust rust-example-rendered"><span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];
-    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">a</span>.<span class="ident">len</span>(), <span class="number">3</span>);</pre>
-    </div><div><code>   .first<span>_mut</span>() .last<span>_mut</span>()</code><details>-&gt; Option</details></div>
-    <div class="docblock"><h4 id="method.first" class="method"><code>fn <a class="fnname" href="#method.first">first</a>(&self) -> <a class="enum" title="std::option::Option" target="_blank" href="https://doc.rust-lang.org/std/option/enum.Option.html">Option</a><&T></code></h4><p>Returns the first element of a slice, or <code>None</code> if it is empty.</p>
-    
-    <h1 id="examples-25" class="section-header"><a href="#examples-25">Examples</a></h1>
-    <span class="rusttest">fn main() {
-        let v = [10, 40, 30];
-        assert_eq!(Some(&10), v.first());
-        
-        let w: &[i32] = &[];
-        assert_eq!(None, w.first());
-    }</span><pre class="rust rust-example-rendered"><span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> [<span class="number">10</span>, <span class="number">40</span>, <span class="number">30</span>];
-    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Some</span>(<span class="kw-2">&</span><span class="number">10</span>), <span class="ident">v</span>.<span class="ident">first</span>());
-    
-    <span class="kw">let</span> <span class="ident">w</span>: <span class="kw-2">&</span>[<span class="ident">i32</span>] <span class="op">=</span> <span class="kw-2">&</span>[];
-    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">None</span>, <span class="ident">w</span>.<span class="ident">first</span>());</pre>
-    </div><div><code>   .get<span>_mut</span>()</code><details>-&gt; Option</details></div>
-    <div class="docblock"><h4 id="method.get" class="method"><code>fn <a href="#method.get" class="fnname">get</a>(&self, index: <a href="../primitive.usize.html" class="primitive">usize</a>) -> <a target="_blank" href="https://doc.rust-lang.org/std/option/enum.Option.html" class="enum" title="std::option::Option">Option</a><&T></code></h4><p>Returns the element of a slice at the given index, or <code>None</code> if the
-    index is out of bounds.</p>
-    
-    <h1 class="section-header" id="examples-27"><a href="#examples-27">Examples</a></h1>
-    <span class="rusttest">fn main() {
-        let v = [10, 40, 30];
-        assert_eq!(Some(&40), v.get(1));
-        assert_eq!(None, v.get(3));
-    }</span><pre class="rust rust-example-rendered"><span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> [<span class="number">10</span>, <span class="number">40</span>, <span class="number">30</span>];
-    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Some</span>(<span class="kw-2">&</span><span class="number">40</span>), <span class="ident">v</span>.<span class="ident">get</span>(<span class="number">1</span>));
-    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">None</span>, <span class="ident">v</span>.<span class="ident">get</span>(<span class="number">3</span>));</pre>
-    </div><div><code>   .is_empty();</code><details></details></div>
-    <div class="docblock"><h4 id="method.is_empty" class="method"><code>fn <a class="fnname" href="#method.is_empty">is_empty</a>(&self) -> <a class="primitive" href="../primitive.bool.html">bool</a></code></h4><p>Returns <code>true</code> if the vector contains no elements.</p>
-    
-    <h1 id="examples-20" class="section-header"><a href="#examples-20">Examples</a></h1>
-    <span class="rusttest">fn main() {
-        let mut v = Vec::new();
-        assert!(v.is_empty());
-        
-        v.push(1);
-        assert!(!v.is_empty());
-    }</span><pre class="rust rust-example-rendered"><span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
-    <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">v</span>.<span class="ident">is_empty</span>());
-    
-    <span class="ident">v</span>.<span class="ident">push</span>(<span class="number">1</span>);
-    <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">v</span>.<span class="ident">is_empty</span>());</pre>
-    </div>
 
 <div><code>let mut vec: Vec&lt;T&gt; = Vec::new();</code></div>
 <div><code>            = Vec::with_capacity();</code></div>
@@ -409,6 +290,53 @@ before doing it.</p>
 <div class="clear_right"></div>
 </section>
 
+<div class="outerdoc" id="vec.new"><h4 class="method" id="method.new"><code>fn <a class="fnname" href="#method.new">new</a>() -&gt; <a class="struct" href="../../std/vec/struct.Vec.html" title="std::vec::Vec">Vec</a>&lt;T&gt;</code></h4><div class="docblock"><p>Constructs a new, empty <code>Vec&lt;T&gt;</code>.</p>
+
+<p>The vector will not allocate until elements are pushed onto it.</p>
+
+<h1 class="section-header" id="examples-1"><a href="#examples-1">Examples</a></h1>
+<span class="rusttest">fn main() {
+    #![allow(unused_mut)]
+let mut vec: Vec&lt;i32&gt; = Vec::new();
+}</span><pre class="rust rust-example-rendered"><span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">vec</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();</pre>
+</div></div><div class="outerdoc" id="vec.with_capacity"><h4 class="method" id="method.with_capacity"><code>fn <a class="fnname" href="#method.with_capacity">with_capacity</a>(capacity: <a class="primitive" href="../primitive.usize.html">usize</a>) -&gt; <a class="struct" href="../../std/vec/struct.Vec.html" title="std::vec::Vec">Vec</a>&lt;T&gt;</code></h4><div class="docblock"><p>Constructs a new, empty <code>Vec&lt;T&gt;</code> with the specified capacity.</p>
+
+<p>The vector will be able to hold exactly <code>capacity</code> elements without
+reallocating. If <code>capacity</code> is 0, the vector will not allocate.</p>
+
+<p>It is important to note that this function does not specify the <em>length</em>
+of the returned vector, but only the <em>capacity</em>. (For an explanation of
+the difference between length and capacity, see the main <code>Vec&lt;T&gt;</code> docs
+above, 'Capacity and reallocation'.)</p>
+
+<h1 class="section-header" id="examples-2"><a href="#examples-2">Examples</a></h1>
+<span class="rusttest">fn main() {
+    let mut vec = Vec::with_capacity(10);
+
+// The vector contains no items, even though it has capacity for more
+assert_eq!(vec.len(), 0);
+
+// These are all done without reallocating...
+for i in 0..10 {
+    vec.push(i);
+}
+
+// ...but this may make the vector reallocate
+vec.push(11);
+}</span><pre class="rust rust-example-rendered"><span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">vec</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">with_capacity</span>(<span class="number">10</span>);
+
+<span class="comment">// The vector contains no items, even though it has capacity for more</span>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">vec</span>.<span class="ident">len</span>(), <span class="number">0</span>);
+
+<span class="comment">// These are all done without reallocating...</span>
+<span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">10</span> {
+    <span class="ident">vec</span>.<span class="ident">push</span>(<span class="ident">i</span>);
+}
+
+<span class="comment">// ...but this may make the vector reallocate</span>
+<span class="ident">vec</span>.<span class="ident">push</span>(<span class="number">11</span>);</pre>
+</div></div>
+
 <div id="overlay">
     <div id="overlayclose">X</div>
     <div id="overlaycontent"></div>
@@ -419,16 +347,28 @@ before doing it.</p>
 <script src="jquery-2.2.3.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-    $("div.docblock").each(function() {
-        var docblock = $(this);
-        $(this).prev().click(function() {
+    $("a[data-doc]").each(function() {
+        var a = $(this);
+        a.click(function() {
+            var doc_id = a.attr("data-doc").replace('.', '\\.');
+            var doc = $('div.outerdoc#' + doc_id);
             var overlay = $("#overlay");
-            $("#overlaycontent").html(docblock.html());
+            $("#overlaycontent").html(doc.html());
             overlay.show();
-
         });
-        $(this).prev().css("cursor", "pointer");
+
     });
+
+    // $("div.docblock").each(function() {
+    //     var docblock = $(this);
+    //     $(this).prev().click(function() {
+    //         var overlay = $("#overlay");
+    //         $("#overlaycontent").html(docblock.html());
+    //         overlay.show();
+
+    //     });
+    //     $(this).prev().css("cursor", "pointer");
+    // });
     $("#overlayclose").click(function() {
         $("#overlay").hide();
     });

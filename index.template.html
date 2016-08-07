@@ -105,7 +105,7 @@
         color: #999;
     }
 
-    div.docblock {
+    div.outerdoc {
         display: none;
     }
 
@@ -299,16 +299,28 @@
 <script src="jquery-2.2.3.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-    $("div.docblock").each(function() {
-        var docblock = $(this);
-        $(this).prev().click(function() {
+    $("a[data-doc]").each(function() {
+        var a = $(this);
+        a.click(function() {
+            var doc_id = a.attr("data-doc").replace('.', '\\.');
+            var doc = $('div.outerdoc#' + doc_id);
             var overlay = $("#overlay");
-            $("#overlaycontent").html(docblock.html());
+            $("#overlaycontent").html(doc.html());
             overlay.show();
-
         });
-        $(this).prev().css("cursor", "pointer");
+
     });
+
+    // $("div.docblock").each(function() {
+    //     var docblock = $(this);
+    //     $(this).prev().click(function() {
+    //         var overlay = $("#overlay");
+    //         $("#overlaycontent").html(docblock.html());
+    //         overlay.show();
+
+    //     });
+    //     $(this).prev().css("cursor", "pointer");
+    // });
     $("#overlayclose").click(function() {
         $("#overlay").hide();
     });
