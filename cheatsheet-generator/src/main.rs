@@ -22,21 +22,48 @@ fn main() {
 
     // Refernce: add_method_line(id, methodname, format, details)
 
+    // new
     vector_box.add_method_line("vec.new", "new", Some("let mut vec: Vec&lt;T&gt; = Vec::new();"), "")
               .doc(&mut vector_ref);
+    // with_capacity
     vector_box.add_method_line("vec.with_capacity", "with_capacity",
                                Some("            = Vec::with_capacity();"),
                                "").doc(&mut vector_ref);
-    vector_box.add_method_line("vec.initmacro", "vec!",
-                               Some("            = vec![];"), "");
-    vector_macro_ref.add_doc_by_element_range("vec.initmacro", sel("section#main"), sel("section.search"));
 
-    //builder.add_link_line("            = vec![];", "", "https://doc.rust-lang.org/std/macro.vec!.html");
-    //builder.add_line_customdoc("vec[3];", "", sel("#indexing"), sel("#slicing"));
-    //builder.add_method_line("len", "", Some("vec.len()"));
-    //builder.add_method_line("first", "-&gt; Option", Some("   .first<span>_mut</span>() .last<span>_mut</span>()"));
-    //builder.add_method_line("get", "-&gt; Option", Some("   .get<span>_mut</span>()"));
-    //builder.add_method_line("is_empty", "", None);
+    // vec![]
+    vector_box.add_method_line("vec.initmacro", "",
+                               Some("            = vec![];"), "");
+    vector_macro_ref.add_doc_by_element("vec.initmacro", sel("section#main"));
+
+    // v[]
+    vector_box.add_method_line("vec.elementaccess", "",
+                               Some("vec[3];"), "");
+    vector_ref.add_doc_by_element_range("vec.elementaccess", sel("#indexing"), sel("#slicing"));
+
+    // len
+    vector_box.add_method_line("vec.len", "len", Some("vec.len()"), "").doc(&mut vector_ref);
+
+    // first_mut, last_mut
+    vector_box.add_method_line("vec.first", "first",
+                               Some(&format!("   .first{}<span>_mut</span>() {}.last{}<span>_mut</span>()",
+                                    a1("vec.first_mut"),
+                                    a1("vec.last"),
+                                    a1("vec.last_mut")
+                                    )), "-&gt; Option").doc(&mut vector_ref);
+    vector_ref.add_doc_for_method("vec.first_mut", "first_mut");
+    vector_ref.add_doc_for_method("vec.last", "last");
+    vector_ref.add_doc_for_method("vec.last_mut", "last_mut");
+
+    // get_mut
+    vector_box.add_method_line("vec.get", "get",
+                               Some(&format!("   .get{}<span>_mut</span>()",
+                                    a1("vec.get_mut"),
+                                    )), "-&gt; Option").doc(&mut vector_ref);
+    vector_ref.add_doc_for_method("vec.get_mut", "get_mut");
+
+    // is_empty
+    vector_box.add_method_line("vec.is_empty", "is_empty", None, "").doc(&mut vector_ref);
+
 
 
     let mut builder = Builder::new();
@@ -45,10 +72,10 @@ fn main() {
     builder.append_group(vector_box);
     builder.write();
 
-    //println!("{:?}", doc);
-    //.as_element().expect("element");
-    //assert!(doc.has_class("docblock"));
+}
 
+fn a1(id : &str) -> String {
+    format!("</a><a data-doc=\"{}\">", &id)
 }
 
 struct Group {
@@ -288,7 +315,7 @@ impl Reference {
                 cache_file.read_to_string(&mut contents).unwrap();
                 Some(contents)
             },
-            Err(e) => None,
+            Err(_) => None,
         }
 
     }
@@ -360,6 +387,20 @@ impl Reference {
 
         self.html.push(Self::make_div_endtag());
         self.html.push(Self::make_div_endtag());
+    }
+
+    /// Gets the inner html of `element`
+    pub fn add_doc_by_element(&mut self, id : &str, element : Selector) {
+
+        self.html.push(Self::make_div_starttag("outerdoc", id));
+        self.html.push(Self::make_div_starttag("docblock", id));
+
+        let element : ElementRef = self.document.select(&element).next().unwrap();
+        self.html.push(element.inner_html());
+
+        self.html.push(Self::make_div_endtag());
+        self.html.push(Self::make_div_endtag());
+
     }
 
     /// Fetch a URL and return the Response as String
