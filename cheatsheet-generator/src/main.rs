@@ -4,13 +4,14 @@ extern crate hyper;
 extern crate ego_tree;
 extern crate sha2;
 
+use std::path::Path;
 use std::fs::File;
 use std::io::{Read, Write};
 use scraper::{Html, Selector};
 use scraper::element_ref::ElementRef;
 use hyper::Client;
 use hyper::header::Connection;
-use sha2::Sha256;
+use sha2::{Sha256, Digest};
 
 fn main() {
 
@@ -242,7 +243,6 @@ impl Builder {
 struct Reference {
     document : Html,
     html : Vec<String>,
-    hash : String,
 }
 
 impl Reference {
@@ -253,18 +253,43 @@ impl Reference {
         // create a Sha256 object
         let mut hasher = Sha256::new();
         hasher.input_str(url);
+        let hash = hasher.result_str();
 
-        let html = Self::fetch(url);
-        println!("Fetched {} bytes from {}", html.len(), url);
+        let html = match Self::read_from_cache(&hash) {
+            Some(h) => {
+                println!("Cachehit: {} bytes from {}", h.len(), url);
+                h
+            },
+            None => {
+                let html = Self::fetch(url);
+                Self::write_to_cache(&html, &hash);
+                println!("Fetched {} bytes from {}", html.len(), url);
+                html
+            }
+        };
         Reference {
             document : Html::parse_document(&html),
             html : Vec::with_capacity(10000),
-            hash : hasher.result_str(),
         }
     }
 
-    fn write_to_cache(&self) {
-        std::fs::create_dir("../cache").ok();
+    fn write_to_cache(html : &str, hash : &str) {
+        let cachedir = Path::new("../cache");
+        std::fs::create_dir(cachedir).ok();
+        let mut cache_file = File::create(cachedir.join(hash)).expect("../cache/foobar not writable");
+        cache_file.write_all(html.as_bytes()).unwrap();
+    }
+
+    fn read_from_cache(hash : &str) -> Option<String> {
+        let cachedir = Path::new("../cache");
+        match File::open(cachedir.join(hash)) {
+            Ok(mut cache_file) => {
+                let mut contents = String::with_capacity(cache_file.metadata().unwrap().len() as usize);
+                cache_file.read_to_string(&mut contents).unwrap();
+                Some(contents)
+            },
+            Err(e) => None,
+        }
 
     }
 

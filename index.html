@@ -290,16 +290,16 @@
 <div class="clear_right"></div>
 </section>
 
-<div class="outerdoc" id="vec.new"><h4 class="method" id="method.new"><code>fn <a class="fnname" href="#method.new">new</a>() -&gt; <a class="struct" href="../../std/vec/struct.Vec.html" title="std::vec::Vec">Vec</a>&lt;T&gt;</code></h4><div class="docblock"><p>Constructs a new, empty <code>Vec&lt;T&gt;</code>.</p>
+<div class="outerdoc" id="vec.new"><h4 id="method.new" class="method"><code>fn <a href="#method.new" class="fnname">new</a>() -&gt; <a href="../../std/vec/struct.Vec.html" title="std::vec::Vec" class="struct">Vec</a>&lt;T&gt;</code></h4><div class="docblock"><p>Constructs a new, empty <code>Vec&lt;T&gt;</code>.</p>
 
 <p>The vector will not allocate until elements are pushed onto it.</p>
 
-<h1 class="section-header" id="examples-1"><a href="#examples-1">Examples</a></h1>
+<h1 id="examples-1" class="section-header"><a href="#examples-1">Examples</a></h1>
 <span class="rusttest">fn main() {
     #![allow(unused_mut)]
 let mut vec: Vec&lt;i32&gt; = Vec::new();
 }</span><pre class="rust rust-example-rendered"><span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">vec</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();</pre>
-</div></div><div class="outerdoc" id="vec.with_capacity"><h4 class="method" id="method.with_capacity"><code>fn <a class="fnname" href="#method.with_capacity">with_capacity</a>(capacity: <a class="primitive" href="../primitive.usize.html">usize</a>) -&gt; <a class="struct" href="../../std/vec/struct.Vec.html" title="std::vec::Vec">Vec</a>&lt;T&gt;</code></h4><div class="docblock"><p>Constructs a new, empty <code>Vec&lt;T&gt;</code> with the specified capacity.</p>
+</div></div><div class="outerdoc" id="vec.with_capacity"><h4 id="method.with_capacity" class="method"><code>fn <a href="#method.with_capacity" class="fnname">with_capacity</a>(capacity: <a href="../primitive.usize.html" class="primitive">usize</a>) -&gt; <a href="../../std/vec/struct.Vec.html" title="std::vec::Vec" class="struct">Vec</a>&lt;T&gt;</code></h4><div class="docblock"><p>Constructs a new, empty <code>Vec&lt;T&gt;</code> with the specified capacity.</p>
 
 <p>The vector will be able to hold exactly <code>capacity</code> elements without
 reallocating. If <code>capacity</code> is 0, the vector will not allocate.</p>
@@ -309,7 +309,7 @@ of the returned vector, but only the <em>capacity</em>. (For an explanation of
 the difference between length and capacity, see the main <code>Vec&lt;T&gt;</code> docs
 above, 'Capacity and reallocation'.)</p>
 
-<h1 class="section-header" id="examples-2"><a href="#examples-2">Examples</a></h1>
+<h1 id="examples-2" class="section-header"><a href="#examples-2">Examples</a></h1>
 <span class="rusttest">fn main() {
     let mut vec = Vec::with_capacity(10);
 

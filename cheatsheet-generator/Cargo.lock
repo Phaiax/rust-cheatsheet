@@ -5,6 +5,7 @@ dependencies = [
  "ego-tree 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "hyper 0.9.10 (registry+https://github.com/rust-lang/crates.io-index)",
  "scraper 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "sha2 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -413,6 +414,14 @@ version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
+name = "sha2"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "rustc-serialize 0.3.19 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "smallvec"
 version = "0.1.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -598,6 +607,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum selectors 0.5.9 (registry+https://github.com/rust-lang/crates.io-index)" = "2d92facb7ec45ccd96ee9ceaf3cc9692d2c9094f147f373d162a5e1b4742a480"
 "checksum semver 0.1.20 (registry+https://github.com/rust-lang/crates.io-index)" = "d4f410fedcf71af0345d7607d246e7ad15faaadd49d240ee3b24e5dc21a820ac"
 "checksum serde 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)" = "7ad09a04412d1ac27ab9c1170190cfed637e0463f2f2ce79e718141624f43a45"
+"checksum sha2 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)" = "e0cd9505afe45df2b8bdda585776281c7b29eb9d0e34b1e6dd2b12cba5d4ae1e"
 "checksum smallvec 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)" = "fcc8d19212aacecf95e4a7a2179b26f7aeb9732a915cf01f05b0d3e044865410"
 "checksum solicit 0.4.4 (registry+https://github.com/rust-lang/crates.io-index)" = "172382bac9424588d7840732b250faeeef88942e37b6e35317dce98cafdd75b2"
 "checksum string_cache 0.2.23 (registry+https://github.com/rust-lang/crates.io-index)" = "e7068fa060f2cb36197a58f0d87900ce943d135ce7e7736d35dfbf7bf92e8a1d"
