@@ -29,7 +29,7 @@ fn main() {
                                "").doc(&mut vector_ref);
     vector_box.add_method_line("vec.initmacro", "vec!",
                                Some("            = vec![];"), "");
-    //vector_macro_ref.add_doc_by_element_range("vec.initmacro", sel("section#main"), sel("section.search"));
+    vector_macro_ref.add_doc_by_element_range("vec.initmacro", sel("section#main"), sel("section.search"));
 
     //builder.add_link_line("            = vec![];", "", "https://doc.rust-lang.org/std/macro.vec!.html");
     //builder.add_line_customdoc("vec[3];", "", sel("#indexing"), sel("#slicing"));
