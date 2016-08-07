@@ -2,6 +2,7 @@
 extern crate scraper;
 extern crate hyper;
 extern crate ego_tree;
+extern crate sha2;
 
 use std::fs::File;
 use std::io::{Read, Write};
@@ -9,6 +10,7 @@ use scraper::{Html, Selector};
 use scraper::element_ref::ElementRef;
 use hyper::Client;
 use hyper::header::Connection;
+use sha2::Sha256;
 
 fn main() {
 
@@ -240,6 +242,7 @@ impl Builder {
 struct Reference {
     document : Html,
     html : Vec<String>,
+    hash : String,
 }
 
 impl Reference {
@@ -247,12 +250,22 @@ impl Reference {
     /// Create doc popups from functions that can be found in `url`.
     /// e.g. url = https://doc.rust-lang.org/std/vec/struct.Vec.html
     pub fn new(url : &str) -> Reference {
+        // create a Sha256 object
+        let mut hasher = Sha256::new();
+        hasher.input_str(url);
+
         let html = Self::fetch(url);
         println!("Fetched {} bytes from {}", html.len(), url);
         Reference {
             document : Html::parse_document(&html),
             html : Vec::with_capacity(10000),
+            hash : hasher.result_str(),
         }
+    }
+
+    fn write_to_cache(&self) {
+        std::fs::create_dir("../cache").ok();
+
     }
 
     /// returns all generated HTML
