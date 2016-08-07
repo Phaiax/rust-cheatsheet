@@ -1,0 +1,13 @@
+[package]
+name = "cheatsheet-generator"
+version = "0.1.0"
+authors = ["Phaiax <phaiax-git@invisibletower.de>"]
+homepage = "http://phaiax.github.io/rust-cheatsheet/"
+repository = "https://github.com/Phaiax/rust-cheatsheet"
+description = "Cheatsheet for rust"
+license = "CC-BY-SA-4.0"
+
+[dependencies]
+scraper = "0.3.1"
+hyper = "*"
+ego-tree = "0.1.0"
