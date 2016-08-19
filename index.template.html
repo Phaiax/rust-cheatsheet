@@ -69,6 +69,9 @@
     a {
         cursor: pointer;
     }
+    a:hover {
+        text-decoration: underline;
+    }
     section div span {
         color: #53dafc;
     }
@@ -180,49 +183,16 @@
 
 <section id="vec" class="red">
     <header><a data-doc="vec.vec">Variable sized arrays / Vectors</a></header>
-    {VECMETHODS}
+    {VEC}
 </section>
-
-
 
 
 
 <section id="vec" class="green">
-<header>Hashmaps / Dicts</header>
-
-<div><code>use std::collections::HashMap;</code></div>
-<div><code>let mut foo: HashMap&lt;K,V&gt; = HashMap::new();</code></div>
-<div><code>                = HashMap::with_capacity();</code><details>K:Eq, Hash</details></div>
-<div><code>foo[key];</code><details></details></div>
-<div><code>foo.len()</code><details></details></div>
-<div><code>   .contains_key(key)</code><details>-&gt; bool</details></div>
-<div><code>   .get<span>_mut</span>(key)</code><details>-&gt; Option</details></div>
-<div><code>   .entry(key)</code><details>-&gt; Entry&lt;..&gt;, for insertion or in-place manipulation</details></div>
-<div><code>   .insert(key, value);</code><details></details></div>
-<div><code>   .extend(iterable)</code><details></details></div>
-<div><code>   .remove(key);</code><details>-&gt; el</details></div>
-<div><code>   .clear();</code><details></details></div>
-<div><code>   .is_empty();</code><details></details></div>
-<hr><hr class="hide">
-<div><code>   .iter<span>_mut</span>();</code><details> -&gt; iter over (key, value) pairs</details></div>
-<div><code>   .keys();</code><details> -&gt; iter over all keys</details></div>
-<div><code>   .values();</code><details> -&gt; iter over all values</details></div>
-<div class="unstable hide"><code>   .drain();</code><details>-&gt; iter that drains</details></div>
-<hr><hr class="hide">
-<div><code>   .clone()</code><details>if K and V:Clone</details></div>
-<div><code>   .clone_from()</code><details>if K and V:Clone</details></div>
-<hr><hr class="hide">
-<div><code>   .capacity();</code><details></details></div>
-<div><code>   .reserve(100);</code><details>in addition to .len() or more</details></div>
-<div><code>   .shrink_to_fit();</code><details></details></div>
-<hr><hr class="hide">
-<div><code>   .eq(other_hm) .ne(..)</code><details>K:Eq, V: PartialEq</details></div>
-<hr><hr class="hide">
-
-<div>Traits: <code>IntoIterator</code>, <code>FromIterator</code>, <code>Debug (if K and V:Debug)</code>, <code>Default</code>, <code>Extend</code>, <code>Index</code></div>
-<hr><hr class="hide">
-<div>Custom Key: use <code>#[derive(Hash, Eq, PartialEq, Debug)] <br>stuct my_key_struct { ... }</code></div>
+    <header><a data-doc="hm.hm">Hashmaps / Dicts</a></header>
+    {HASHMAP}
 </section>
+
 
 
 

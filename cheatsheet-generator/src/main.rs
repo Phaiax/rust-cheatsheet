@@ -14,18 +14,31 @@ use hyper::header::Connection;
 use sha2::{Sha256, Digest};
 
 mod vector;
-
+mod hashmap;
 
 fn main() {
 
-    let mut vector_box = Group::new("{VECMETHODS}");
     let mut r = References::new();
-
-    vector::make(&mut r, &mut vector_box);
-
     let mut builder = Builder::new();
-    builder.append_docs(r);
+
+    let mut vector_box = Group::new("{VEC}");
+    vector::make(&mut r, &mut vector_box);
     builder.append_group(vector_box);
+
+    let mut hashmap_box = Group::new("{HASHMAP}");
+    hashmap::make(&mut r, &mut hashmap_box);
+    builder.append_group(hashmap_box);
+
+    r.from_iter.add_doc_by_element("trait.FromIterator", sel("section#main"));
+    r.into_iter.add_doc_by_element("trait.IntoIterator", sel("section#main"));
+    r.partial_ord.add_doc_by_element("trait.PartialOrd", sel("section#main"));
+    r.partial_eq.add_doc_by_element("trait.PartialEq", sel("section#main"));
+    r.ord.add_doc_by_element("trait.Ord", sel("section#main"));
+    r.eq.add_doc_by_element("trait.Eq", sel("section#main"));
+    r.write.add_doc_by_element("trait.Write", sel("section#main"));
+
+
+    builder.append_docs(r);
     builder.write();
 
 }
@@ -426,6 +439,7 @@ pub struct References {
     pub ord : Reference,
     pub write : Reference,
     pub iter : Reference,
+    pub hm : Reference,
 }
 
 
@@ -442,6 +456,8 @@ impl References {
             ord : Reference::new("https://doc.rust-lang.org/std/cmp/trait.Ord.html"),
             write : Reference::new("https://doc.rust-lang.org/std/io/trait.Write.html"),
             iter : Reference::new("https://doc.rust-lang.org/std/slice/struct.Iter.html"),
+            hm : Reference::new("https://doc.rust-lang.org/std/collections/struct.HashMap.html"),
+
         }
     }
 
@@ -456,6 +472,7 @@ impl References {
         builder.append_doc(self.ord);
         builder.append_doc(self.write);
         builder.append_doc(self.iter);
+        builder.append_doc(self.hm);
     }
 }
 
