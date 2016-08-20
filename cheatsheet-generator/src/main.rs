@@ -192,6 +192,9 @@ impl MethodLine {
 
     /// Adds a link to some extern docs (e.g. Trait docs)
     pub fn a(mut self, docid : &str) -> MethodLine {
+        if self.code_closed {
+            panic!("Details started, no more links allowed");
+        }
         self.close_link();
         self.buf.push_str("<a data-doc=\"");
         self.buf.push_str(docid);
@@ -207,7 +210,7 @@ impl MethodLine {
     }
 
     /// Start new link and include docs
-    pub fn a_add_docs(mut self, methodname : &str) -> MethodLine {
+    pub fn a_add_docs(self, methodname : &str) -> MethodLine {
         let docid = Self::docid(methodname);
         self.a_add_docs_use_id(methodname, &docid)
     }
@@ -219,11 +222,11 @@ impl MethodLine {
     /// Closes <code> tag if still open
     fn close_code(&mut self) {
         self.close_link();
-        if self.code_closed {
-            panic!("Details started, no more links allowed");
+
+        if ! self.code_closed {
+            self.buf.push_str("</code>");
+            self.code_closed = true;
         }
-        self.buf.push_str("</code>");
-        self.code_closed = true;
     }
 
     /// Closes <a> tag if still open

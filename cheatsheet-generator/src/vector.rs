@@ -1,5 +1,5 @@
 
-use ::{a1,a0,References,Group,sel,MethodLine};
+use ::{References,Group,sel,MethodLine};
 
 pub fn make(r : &mut References, mut vector_box : &mut Group) {
 
@@ -18,447 +18,407 @@ pub fn make(r : &mut References, mut vector_box : &mut Group) {
 
     // new
     MethodLine::new().a_add_docs("new")
-                .text("let mut vec: Vec&lt;T&gt; = Vec::new();")
-                .finish(&mut r.vector, &mut vector_box);
-    vector_box.add_method_line("vec.new", "new", Some("let mut vec: Vec&lt;T&gt; = Vec::new();"), "")
-              .doc(&mut r.vector);
+                     .text("let mut vec: Vec&lt;T&gt; = Vec::new();")
+                     .finish(&mut r.vector, &mut vector_box);
+
     // with_capacity
-    vector_box.add_method_line("vec.with_capacity", "with_capacity",
-                               Some("            = Vec::with_capacity();"),
-                               "").doc(&mut r.vector);
+    MethodLine::new().a_add_docs("with_capacity")
+                .text("            = Vec::with_capacity();")
+                .finish(&mut r.vector, &mut vector_box);
 
     // vec![]
-    vector_box.add_method_line("vec.initmacro", "",
-                               Some("            = vec![];"), "");
+    MethodLine::new().a("vec.initmacro")
+                     .text("            = vec![];")
+                     .finish(&mut r.vector, &mut vector_box);
     r.vector_macro.add_doc_by_element("vec.initmacro", sel("section#main"));
 
     // boxed array -> Vec
-    vector_box.add_method_line("boxedvec.into_vec", "into_vec",
-                               Some("            = boxedarray.into_vec()"), "")
-                                .doc(&mut r.vector);
-    // From
-    vector_box.add_method_line("vec.from", "from-1",
-                               Some(&format!("            = Vec::from(slice|{}str|{}VecDeque|{}CString)",
-                                a1("vec.from-str"),
-                                a1("vec.from-vecdeque"),
-                                a1("vec.from-cstring"),
-                                )), "").doc(&mut r.vector);
-    r.vector.add_doc_for_method("vec.from-str", "from-2");
-    r.vector.add_doc_for_method("vec.from-vecdeque", "from-3");
-    r.vector.add_doc_for_method("vec.from-cstring", "from-4");
+    MethodLine::new().a_add_docs("into_vec")
+                     .text("            = boxedarray.into_vec()")
+                     .finish(&mut r.vector, &mut vector_box);
 
+    // From
+    MethodLine::new().a_add_docs("from-1") .text("            = Vec::from(slice|")
+                     .a_add_docs("from-2") .text("str|")
+                     .a_add_docs("from-3") .text("VecDeque|")
+                     .a_add_docs("from-4") .text("CString)")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // clone
-    vector_box.add_method_line("vec.clone", "clone",
-                               Some("            = othervec.clone();"), "if T:Clone")
-                               .doc(&mut r.vector);
+    MethodLine::new().a_add_docs("clone")
+                     .text("            = othervec.clone();")
+                     .details("if T:Clone")
+                     .finish(&mut r.vector, &mut vector_box);
 
 
     // ACCESSING
     vector_box.add_section("Accessing");
 
     // v[]
-    vector_box.add_method_line("vec.elementaccess", "",
-                               Some("vec[3];"), "vec[1..3], vec[..3], vec[3..], vec[..]; vec[2] = a;");
+    MethodLine::new().a("vec.elementaccess")
+                     .text("vec[3];")
+                     .details("vec[1..3], vec[..3], vec[3..], vec[..]; vec[2] = a;")
+                     .finish(&mut r.vector, &mut vector_box);
     r.vector.add_doc_by_element_range("vec.elementaccess", sel("#indexing"), sel("#slicing"));
 
 
     // len
-    vector_box.add_method_line("vec.len", "len", Some("vec.len();"), "").doc(&mut r.vector);
+    MethodLine::new().a_add_docs("len")
+                     .text("vec.len();")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // is_empty
-    vector_box.add_method_line("vec.is_empty", "is_empty", None, "").doc(&mut r.vector);
+    MethodLine::new().single_method_with_doc("is_empty")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // first_mut, last_mut
-    vector_box.add_method_line("vec.first", "first",
-                               Some(&format!("  .first{}<span>_mut</span>(); {}.last{}<span>_mut</span>();",
-                                    a1("vec.first_mut"),
-                                    a1("vec.last"),
-                                    a1("vec.last_mut")
-                                    )), "-&gt; Option").doc(&mut r.vector);
-    r.vector.add_doc_for_method("vec.first_mut", "first_mut");
-    r.vector.add_doc_for_method("vec.last", "last");
-    r.vector.add_doc_for_method("vec.last_mut", "last_mut");
+    MethodLine::new().a_add_docs("first")       .text("  .first")
+                                  .a_add_docs("first_mut")   .text("<span>_mut</span>(); ")
+                                  .a_add_docs("last")        .text(".last")
+                                  .a_add_docs("last_mut")    .text("<span>_mut</span>();")
+                     .details("-&gt; Option")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // get_mut
-    vector_box.add_method_line("vec.get", "get",
-                               Some(&format!("  .get{}<span>_mut</span>(index);",
-                                    a1("vec.get_mut"),
-                                    )), "-&gt; Option").doc(&mut r.vector);
-    r.vector.add_doc_for_method("vec.get_mut", "get_mut");
+    MethodLine::new().a_add_docs("get")     .text("  .get")
+                                 .a_add_docs("get_mut")  .text("<span>_mut</span>(index);")
+                    .details("-&gt; Option")
+                    .finish(&mut r.vector, &mut vector_box);
 
 
     // contains
-    vector_box.add_method_line("vec.contains", "contains",
-                               Some("  .contains(needle);"), "-&gt; bool")
-                               .doc(&mut r.vector);
+    MethodLine::new().a_add_docs("contains")
+                     .text("  .contains(needle);")
+                     .details("-&gt; bool")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // find
-    vector_box.add_method_line("iter.find", "",
-                               Some("  .iter().find(|&amp;T| -> bool);"), "-&gt; Option");
+    MethodLine::new().a("iter.find")
+                     .text("  .iter().find(|&amp;T| -> bool);")
+                     .details("-&gt; Option")
+                     .finish(&mut r.vector, &mut vector_box);
     r.iter.add_doc_for_method("iter.find", "find");
 
     // binary_search
-    vector_box.add_method_line("vec.binary_search", "binary_search",
-                               Some("  .binary_search(x:&amp;T);"), "-&gt; Result&lt;usize, usize&gt;<br>Ok(i): pos, Err(i): pos for insertion")
-                               .doc(&mut r.vector);
+    MethodLine::new().a_add_docs("binary_search")
+                     .text("  .binary_search(x:&amp;T);")
+                     .details("-&gt; Result&lt;usize, usize&gt;<br>Ok(i): pos, Err(i): pos for insertion")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // binary_search_by
-    vector_box.add_method_line("vec.binary_search_by", "binary_search_by",
-                               Some("  .binary_search_by(|&amp;T|->Ordering);"), "")
-                               .doc(&mut r.vector);
+    MethodLine::new().a_add_docs("binary_search_by")
+                     .text("  .binary_search_by(|&amp;T|->Ordering);")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // binary_search_by_key
-    vector_box.add_method_line("vec.binary_search_by_key", "binary_search_by_key",
-                               Some("  .binary_search_by_key(Key, |&amp;T|->Key);"), "")
-                               .doc(&mut r.vector);
+    MethodLine::new().a_add_docs("binary_search_by_key")
+                     .text("  .binary_search_by_key(Key, |&amp;T|->Key);")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // ends_with
-    vector_box.add_method_line("vec.ends_with", "ends_with",
-                               Some("  .ends_with(needle);"), "")
-                               .doc(&mut r.vector);
+    MethodLine::new().a_add_docs("ends_with")
+                     .text("  .ends_with(needle);")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // starts_with
-    vector_box.add_method_line("vec.starts_with", "starts_with",
-                               Some("  .starts_with(needle);"), "")
-                               .doc(&mut r.vector);
+    MethodLine::new().a_add_docs("starts_with")
+                     .text("  .starts_with(needle);")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // ADDING
     vector_box.add_section("Adding");
 
     // push
-    vector_box.add_method_line("vec.push", "push",
-                               Some("  .push(3);"), "to end")
-                               .doc(&mut r.vector);
+    MethodLine::new().a_add_docs("push")
+                     .text("  .push(3);")
+                     .details("to end")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // insert
-    vector_box.add_method_line("vec.insert", "insert",
-                               Some("  .insert(index, element);"), "")
-                               .doc(&mut r.vector);
+    MethodLine::new().a_add_docs("insert")
+                     .text("  .insert(index, element);")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // extend
-    vector_box.add_method_line("vec.extend", "extend",
-                               Some("  .extend(iterable);"), "")
-                               .doc(&mut r.vector);
+    MethodLine::new().a_add_docs("extend")
+                     .text("  .extend(iterable);")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // extend_from_slice
-    vector_box.add_method_line("vec.extend_from_slice", "extend_from_slice",
-                               Some("  .extend_from_slice(&amp;[T]);"), "")
-                               .doc(&mut r.vector);
+    MethodLine::new().a_add_docs("extend_from_slice")
+                     .text("  .extend_from_slice(&amp;[T]);")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // append
-    vector_box.add_method_line("vec.append", "append",
-                                Some("  .append(other : Vec);"), "drains other")
-                                .doc(&mut r.vector);
+    MethodLine::new().a_add_docs("append")
+                     .text("  .append(other : Vec);")
+                     .details("drains other")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // clone_from
-    vector_box.add_method_line("vec.clone_from", "clone_from",
-                               Some("  .clone_from(&amp;Vec&lt;T&gt;);"), "overrides self, if T:Clone")
-                               .doc(&mut r.vector);
+    MethodLine::new().a_add_docs("clone_from")
+                     .text("  .clone_from(&amp;Vec&lt;T&gt;);")
+                     .details("overrides self, if T:Clone")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // clone_from_slice
-    vector_box.add_method_line("vec.clone_from_slice", "clone_from_slice",
-                               Some("  .clone_from_slice(&amp;[T]);"), "if T:Clone")
-                               .doc(&mut r.vector);
+    MethodLine::new().a_add_docs("clone_from_slice")
+                     .text("  .clone_from_slice(&amp;[T]);")
+                     .details("if T:Clone")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // copy_from_slice
-    vector_box.add_method_line("vec.copy_from_slice", "copy_from_slice",
-                               Some("  .copy_from_slice(&amp;[T]);"), "if T:Copy (use memcpy)")
-                               .doc(&mut r.vector);
+    MethodLine::new().a_add_docs("copy_from_slice")
+                     .text("  .copy_from_slice(&amp;[T]);")
+                     .details("if T:Copy (use memcpy)")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // REMOVING
     vector_box.add_section("Removing");
 
     // pop
-    vector_box.add_method_line("vec.pop", "pop",
-                               Some("  .pop();"), "removes last -> Option")
-                               .doc(&mut r.vector);
+    MethodLine::new().a_add_docs("pop")
+                     .text("  .pop();")
+                     .details("removes last -> Option")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // remove
-    vector_box.add_method_line("vec.remove", "remove",
-                               Some("  .remove(index);"), "-&gt; el, shifts left")
-                               .doc(&mut r.vector);
+    MethodLine::new().a_add_docs("remove")
+                     .text("  .remove(index);")
+                     .details("-&gt; el, shifts left")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // swap_remove
-    vector_box.add_method_line("vec.swap_remove", "swap_remove",
-                               Some("  .swap_remove(index);"), "-&gt; el, fills with last")
-                               .doc(&mut r.vector);
+    MethodLine::new().a_add_docs("swap_remove")
+                     .text("  .swap_remove(index);")
+                     .details("-&gt; el, fills with last")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // truncate
-    vector_box.add_method_line("vec.truncate", "truncate",
-                               Some("  .truncate(i);"), "cut until .len() = i")
-                               .doc(&mut r.vector);
+    MethodLine::new().a_add_docs("truncate")
+                     .text("  .truncate(i);")
+                     .details("cut until .len() = i")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // drain
-    vector_box.add_method_line("vec.drain", "drain",
-                               Some("  .drain(range);"), "-&gt; iter that drains")
-                               .doc(&mut r.vector);
+    MethodLine::new().a_add_docs("drain")
+                     .text("  .drain(range);")
+                     .details("-&gt; iter that drains")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // clear
-    vector_box.add_method_line("vec.clear", "clear",
-                               Some("  .clear();"), "")
-                               .doc(&mut r.vector);
+    MethodLine::new().a_add_docs("clear")
+                     .text("  .clear();")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // retain
-    vector_box.add_method_line("vec.retain", "retain",
-                               Some("  .retain(|i| -&gt; bool);"), "in place")
-                               .doc(&mut r.vector);
+    MethodLine::new().a_add_docs("retain")
+                     .text("  .retain(|i| -&gt; bool);")
+                     .details("in place")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // dedup
-    vector_box.add_method_line("vec.dedup", "dedup",
-                               Some("  .dedup();"), "removes duplicates (if T:PartialEq)")
-                               .doc(&mut r.vector);
+    MethodLine::new().a_add_docs("dedup")
+                     .text("  .dedup();")
+                     .details("removes duplicates (if T:PartialEq)")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // MANIPULATING
     vector_box.add_section("Manipulating");
 
     // sort
-    vector_box.add_method_line("vec.sort", "sort",
-                               Some("  .sort();"), "in place")
-                               .doc(&mut r.vector);
+    MethodLine::new().a_add_docs("sort")
+                     .text("  .sort();")
+                     .details("in place")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // sort_by
-    vector_box.add_method_line("vec.sort_by", "sort_by",
-                               Some("  .sort_by(|&amp;T|->Ordering);"), "in place")
-                               .doc(&mut r.vector);
+    MethodLine::new().a_add_docs("sort_by")
+                     .text("  .sort_by(|&amp;T|->Ordering);")
+                     .details("in place")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // sort_by_key
-    vector_box.add_method_line("vec.sort_by_key", "sort_by_key",
-                               Some("  .sort_by_key(|&amp;T|->Key);"), "Key:Ordering")
-                               .doc(&mut r.vector);
+    MethodLine::new().a_add_docs("sort_by_key")
+                     .text("  .sort_by_key(|&amp;T|->Key);")
+                     .details("Key:Ordering")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // reverse
-    vector_box.add_method_line("vec.reverse", "reverse",
-                               Some("  .reverse();"), "in place")
-                               .doc(&mut r.vector);
+    MethodLine::new().a_add_docs("reverse")
+                     .text("  .reverse();")
+                     .details("in place")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // swap
-    vector_box.add_method_line("vec.swap", "swap",
-                               Some("  .swap(index1, index2);"), "")
-                               .doc(&mut r.vector);
+    MethodLine::new().a_add_docs("swap")
+                     .text("  .swap(index1, index2);")
+                     .finish(&mut r.vector, &mut vector_box);
 
 
     // TRANSFORMING
     vector_box.add_section("Transforming (Iter, as_, to_)");
 
     // iter
-    vector_box.add_method_line("vec.iter", "iter",
-                               Some(&format!("  .iter{}<span>_mut</span>();",
-                                a1("vec.iter_mut"),
-                                )), "<div title=\"borrows value\">-&gt;&<span>mut </span>T, keeps vector</div>")
-                               .doc(&mut r.vector);
-    r.vector.add_doc_for_method("vec.iter_mut", "iter_mut");
+    MethodLine::new().a_add_docs("iter")     .text("  .iter")
+                     .a_add_docs("iter_mut") .text("<span>_mut</span>();")
+                     .details("<div title=\"borrows value\">-&gt;&<span>mut </span>T, keeps vector</div>")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // into_iter
-    vector_box.add_method_line("vec.into_iter", "into_iter",
-                               Some("  .into_iter();"), "<div title=\"transfers ownership\">-&gt;T, consumes vector</div>")
-                               .doc(&mut r.vector);
+    MethodLine::new().a_add_docs("into_iter")
+                     .text("  .into_iter();")
+                     .details("<div title=\"transfers ownership\">-&gt;T, consumes vector</div>")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // chunks
-    vector_box.add_method_line("vec.chunks", "chunks",
-                               Some(&format!("  .chunks{}<span>_mut</span>(cnk_sz);",
-                                a1("vec.chunks_mut"),
-                                )), "-&gt; iter over a non overlapping slice at a time")
-                               .doc(&mut r.vector);
-    r.vector.add_doc_for_method("vec.chunks_mut", "chunks_mut");
+    MethodLine::new().a_add_docs("chunks")      .text("  .chunks")
+                     .a_add_docs("chunks_mut")  .text("<span>_mut</span>(cnk_sz);")
+                     .details("-&gt; iter over a non overlapping slice at a time")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // windows
-    vector_box.add_method_line("vec.windows", "windows",
-                               Some("  .windows(wnd_sz);"), "-&gt; iter over an overlapping slice at a time")
-                               .doc(&mut r.vector);
+    MethodLine::new().a_add_docs("windows")
+                     .text("  .windows(wnd_sz);")
+                     .details("-&gt; iter over an overlapping slice at a time")
+                     .finish(&mut r.vector, &mut vector_box);
     vector_box.add_hr();
 
     // into_boxed_slice
-    vector_box.add_method_line("vec.into_boxed_slice", "into_boxed_slice",
-                               Some("  .into_boxed_slice();"), "-&gt; Box&lt;T&gt;")
-                               .doc(&mut r.vector);
+    MethodLine::new().a_add_docs("into_boxed_slice")
+                     .text("  .into_boxed_slice();")
+                     .details("-&gt; Box&lt;T&gt;")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // as_ref
-    vector_box.add_method_line("vec.as_ref", "as_ref",
-                               Some("  .as_ref();"), "-&gt; &amp;[T] or &amp;Vec&lt;T&gt;")
-                               .doc(&mut r.vector);
+    MethodLine::new().a_add_docs("as_ref")
+                     .text("  .as_ref();")
+                     .details("-&gt; &amp;[T] or &amp;Vec&lt;T&gt;")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // to_vec
-    vector_box.add_method_line("vec.to_vec", "to_vec",
-                               Some("  .to_vec();"), "like clone(), if T:Clone")
-                               .doc(&mut r.vector);
+    MethodLine::new().a_add_docs("to_vec")
+                     .text("  .to_vec();")
+                     .details("like clone(), if T:Clone")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // as_slice
-    vector_box.add_method_line("vec.as_slice", "as_slice",
-                               Some(&format!("  .as{}<span>_mut</span>{}_slice();",
-                                a1("vec.as_mut_slice"),
-                                a1("vec.as_slice"))), "-&gt; &amp;<span>mut</span>[T]")
-                               .doc(&mut r.vector);
-    r.vector.add_doc_for_method("vec.as_mut_slice", "as_mut_slice");
+    MethodLine::new().a_add_docs("as_slice")     .text("  .as")
+                     .a_add_docs("as_mut_slice") .text("<span>_mut</span>")
+                                                 .text("_slice();")
+                     .details("-&gt; &amp;<span>mut</span>[T]")
+                     .finish(&mut r.vector, &mut vector_box);
 
 
     // MEMORY
     vector_box.add_section("Memory");
 
     // capacity
-    vector_box.add_method_line("vec.capacity", "capacity",
-                               Some("  .capacity();"), "")
-                               .doc(&mut r.vector);
+    MethodLine::new().a_add_docs("capacity")
+                     .text("  .capacity();")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // reserve
-    vector_box.add_method_line("vec.reserve", "reserve",
-                               Some("  .reserve(100);"), "in addition to .len() or more")
-                               .doc(&mut r.vector);
+    MethodLine::new().a_add_docs("reserve")
+                     .text("  .reserve(100);")
+                     .details("in addition to .len() or more")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // reserve_exact
-    vector_box.add_method_line("vec.reserve_exact", "reserve_exact",
-                               Some("  .reserve_exact(100);"), "in addition to .len()")
-                               .doc(&mut r.vector);
+    MethodLine::new().a_add_docs("reserve_exact")
+                     .text("  .reserve_exact(100);")
+                     .details("in addition to .len()")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // shrink_to_fit
-    vector_box.add_method_line("vec.shrink_to_fit", "shrink_to_fit",
-                               Some("  .shrink_to_fit();"), "")
-                               .doc(&mut r.vector);
+    MethodLine::new().a_add_docs("shrink_to_fit")
+                     .text("  .shrink_to_fit();")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // MEMORY
     vector_box.add_section("Split");
 
 
     // split_at
-    vector_box.add_method_line("vec.split_at", "split_at",
-                               Some(&format!("  .split_at{}<span>_mut</span>(mid);",
-                                a1("vec.split_at_mut"),
-                                )), "-&gt; (p1, p2), [mid] in 2nd part")
-                               .doc(&mut r.vector);
-    r.vector.add_doc_for_method("vec.split_at_mut", "split_at_mut");
+    MethodLine::new().a_add_docs("split_at")    .text("  .split_at")
+                     .a_add_docs("split_at_mut").text("<span>_mut</span>(mid);")
+                     .details("-&gt; (p1, p2), [mid] in 2nd part")
+                     .finish(&mut r.vector, &mut vector_box);
 
 
-    vector_box.add_method_line("vec.split", "split",
-                               Some(&format!("  .split{}<span>_mut</span>(|&amp;T| -&gt; bool);",
-                                    a1("vec.split_mut"),
-                                    )), "").doc(&mut r.vector);
-    r.vector.add_doc_for_method("vec.split_mut", "split_mut");
+    MethodLine::new().a_add_docs("split")       .text("  .split")
+                     .a_add_docs("split_mut")   .text("<span>_mut</span>(|&amp;T| -&gt; bool);")
+                     .finish(&mut r.vector, &mut vector_box);
 
 
-    vector_box.add_method_line("vec.splitn", "splitn",
-                               Some(&format!("  .splitn{}<span>_mut</span>(n, |&amp;T| -&gt; bool); {}.rsplitn{}<span>_mut</span>(_);",
-                                    a1("vec.splitn_mut"),
-                                    a1("vec.rsplitn"),
-                                    a1("vec.rsplitn_mut"),
-                                    )), "-&gt; iter over <span>mutable</span> subslices,<br> seperated by ||-&gt;true, <span>at most n times</span>").doc(&mut r.vector);
-
-    r.vector.add_doc_for_method("vec.splitn_mut", "splitn_mut");
-    r.vector.add_doc_for_method("vec.rsplitn", "rsplitn");
-    r.vector.add_doc_for_method("vec.rsplitn_mut", "rsplitn_mut");
+    MethodLine::new().a_add_docs("splitn")      .text("  .splitn")
+                     .a_add_docs("splitn_mut")  .text("<span>_mut</span>(n, |&amp;T| -&gt; bool); ")
+                     .a_add_docs("rsplitn")     .text(".rsplitn")
+                     .a_add_docs("rsplitn_mut") .text("<span>_mut</span>(_);")
+                     .details("-&gt; iter over <span>mutable</span> subslices,<br> seperated by ||-&gt;true, <span>at most n times</span>")
+                     .finish(&mut r.vector, &mut vector_box);
 
 
-    vector_box.add_method_line("vec.split_off", "split_off",
-                               Some("  .split_off(mid);"), "-&gt; Vec; [mid] in 2nd part")
-                               .doc(&mut r.vector);
+    MethodLine::new().a_add_docs("split_off")
+                     .text("  .split_off(mid);")
+                     .details("-&gt; Vec; [mid] in 2nd part")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // COMPARISION
     vector_box.add_section("Comparision");
 
     // cmp
-    vector_box.add_method_line("vec.cmp", "cmp",
-                               Some(&format!("  .cmp() {}.eq() {}.ne();",
-                                a1("vec.eq"),
-                                a1("vec.ne"),)),
-                               "T: PartialEq")
-                               .doc(&mut r.vector);
-    r.vector.add_doc_for_method("vec.eq", "eq");
-    r.vector.add_doc_for_method("vec.ne", "ne");
+    MethodLine::new().a_add_docs("cmp")     .text("  .cmp() ")
+                     .a_add_docs("eq")      .text(".eq() ")
+                     .a_add_docs("ne")      .text(".ne();")
+                     .details("T: PartialEq")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // lt
-    vector_box.add_method_line("vec.lt", "lt",
-                               Some(&format!("  .lt() {}.le() {}.gt() {}.ge();",
-                                a1("vec.le"),
-                                a1("vec.gt"),
-                                a1("vec.ge"))),
-                                "if T:PartialOrd")
-                               .doc(&mut r.vector);
-    r.vector.add_doc_for_method("vec.le", "le");
-    r.vector.add_doc_for_method("vec.gt", "gt");
-    r.vector.add_doc_for_method("vec.ge", "ge");
+    MethodLine::new().a_add_docs("lt") .text("  .lt() ")
+                     .a_add_docs("le") .text(".le() ")
+                     .a_add_docs("gt") .text(".gt() ")
+                     .a_add_docs("ge") .text(".ge();")
+                     .details("if T:PartialOrd")
+                     .finish(&mut r.vector, &mut vector_box);
 
     vector_box.add_hr();
 
     // hash
-    vector_box.add_method_line("vec.hash", "hash",
-                               Some("  .hash(state: Hasher)"), "if T:Hash")
-                               .doc(&mut r.vector);
+    MethodLine::new().a_add_docs("hash")
+                     .text("  .hash(state: Hasher)")
+                     .details("if T:Hash")
+                     .finish(&mut r.vector, &mut vector_box);
 
     // TRAITS
     vector_box.add_section("Traits");
 
-    vector_box.add_line_customdoc(&format!("
-        {}<code>From&lt;BinaryHeap&gt;</code>,
-        {}<code>Borrow{}<span>Mut</span></code>,
-        {}<code>Clone {}<span>+</span></code>,
-        {}<code>Hash {}<span>+</span></code>,
-        {}<code>Index{}<span>Mut</span></code>,
-        {}<code>Deref{}<span>Mut</span></code>,
-        {}<code>FromIterator</code>,
-        {}<code>IntoIterator</code>,
-        {}<code>Extend</code>,
-        {}<code>PartialEq</code>,
-        {}<code>PartialOrd</code>,
-        {}<code>Eq</code>,
-        {}<code>Ord</code>,
-        {}<code>Drop</code>,
-        {}<code>Default</code>,
-        {}<code>Debug (if T:Debug)</code>,
-        {}<code>AsRef</code>,
-        {}<code>AsMut</code>,
-        {}<code>From</code>,
-        {}<code>Write</code>
-        </a>",
-        a0("vec.BinaryHeap-from"),
-        a1("vec.borrow"),
-        a1("vec.borrow_mut"),
-        a1("vec.clone"),
-        a1("vec.clone_from"),
-        a1("vec.hash"),
-        a1("vec.hash_slice"),
-        a1("vec.index"),
-        a1("vec.index_mut"),
-        a1("vec.deref"),
-        a1("vec.deref_mut"),
-        a1("trait.FromIterator"),
-        a1("trait.IntoIterator"),
-        a1("vec.extend"),
-        a1("trait.PartialEq"),
-        a1("trait.PartialOrd"),
-        a1("trait.Eq"),
-        a1("trait.Ord"),
-        a1("vec.Drop"),
-        a1("vec.Default"),
-        a1("vec.Debug"),
-        a1("vec.AsRef"),
-        a1("vec.AsMut"),
-        a1("vec.From"),
-        a1("trait.Write"),
-        ), "" );
-
-    r.vector.add_doc_for_method("vec.BinaryHeap-from", "from");
-    r.vector.add_doc_for_method("vec.borrow", "borrow");
-    r.vector.add_doc_for_method("vec.borrow_mut", "borrow_mut");
-    r.vector.add_doc_for_method("vec.clone", "clone");
-    r.vector.add_doc_for_method("vec.clone_from", "clone_from");
-    r.vector.add_doc_for_method("vec.hash", "hash");
-    r.vector.add_doc_for_method("vec.hash_slice", "hash_slice");
-    r.vector.add_doc_for_method("vec.index", "index");
-    r.vector.add_doc_for_method("vec.index_mut", "index_mut");
-    r.vector.add_doc_for_method("vec.deref", "deref");
-    r.vector.add_doc_for_method("vec.deref_mut", "deref_mut");
-    // FromIter (in main.rs)
-    // IntoIter (in main.rs)
-    r.vector.add_doc_for_method("vec.extend", "extend");
-    // PartialOrd (in main.rs)
-    // PartialEq (in main.rs)
-    // Ord (in main.rs)
-    // Eq (in main.rs)
-    r.vector.add_doc_for_method("vec.Drop", "drop");
-    r.vector.add_doc_for_method("vec.Default", "default");
-    r.vector.add_doc_for_method("vec.Debug", "fmt");
-    r.vector.add_doc_for_method("vec.AsRef", "as_ref");
-    r.vector.add_doc_for_method("vec.AsMut", "as_mut");
-    r.vector.add_doc_for_method("vec.From", "from-1");
-    // Write (in main.rs)
+    MethodLine::new()
+        .a_add_docs("from")        .text("<code>From&lt;BinaryHeap&gt;</code>,")
+        .a_add_docs("borrow")       .text("<code>Borrow")
+        .a_add_docs("borrow_mut")   .text("<span>Mut</span></code>,")
+        .a_add_docs("clone")        .text("<code>Clone ")
+        .a_add_docs("clone_from")   .text("<span>+</span></code>,")
+        .a_add_docs("hash")         .text("<code>Hash ")
+        .a_add_docs("hash_slice")   .text("<span>+</span></code>,")
+        .a_add_docs("index")        .text("<code>Index")
+        .a_add_docs("index_mut")    .text("<span>Mut</span></code>,")
+        .a_add_docs("deref")        .text("<code>Deref")
+        .a_add_docs("deref_mut")    .text("<span>Mut</span></code>,")
+        .a("trait.FromIterator")    .text("<code>FromIterator</code>,")
+        .a("trait.IntoIterator")    .text("<code>IntoIterator</code>,")
+        .a_add_docs("extend")       .text("<code>Extend</code>,")
+        .a("trait.PartialEq")       .text("<code>PartialEq</code>,")
+        .a("trait.PartialOrd")      .text("<code>PartialOrd</code>,")
+        .a("trait.Eq")              .text("<code>Eq</code>,")
+        .a("trait.Ord")             .text("<code>Ord</code>,")
+        .a_add_docs("drop")         .text("<code>Drop</code>,")
+        .a_add_docs("default")      .text("<code>Default</code>,")
+        .a_add_docs("fmt")          .text("<code>Debug (if T:Debug)</code>,")
+        .a_add_docs("as_ref")       .text("<code>AsRef</code>,")
+        .a_add_docs("as_mut")       .text("<code>AsMut</code>,")
+        .a_add_docs("from-1")       .text("<code>From</code>,")
+        .a("trait.Write")           .text("<code>Write</code>")
+        .finish(&mut r.vector, &mut vector_box);
 
 }
