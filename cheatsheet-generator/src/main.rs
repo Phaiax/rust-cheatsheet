@@ -588,6 +588,7 @@ impl Reference {
         let mut body = String::new();
         res.read_to_string(&mut body).unwrap();
         body.replace("href='", &format!("target='_blank' href='{}", url))
+            .replace("href=\"", &format!("target='_blank' href=\"{}", url))
     }
 }
 
