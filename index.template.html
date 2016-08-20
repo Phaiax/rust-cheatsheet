@@ -287,7 +287,12 @@ $(document).ready(function() {
 
     $(document).keypress(function(event) {
         if (event.key == "Escape") {
-            $("#overlay").hide();
+            if (!$("#overlay").is(":hidden")) {
+                $("#overlay").hide();
+            } else if ($("div#search input").val().length != 0) {
+                $("div#search input").val("");
+                filter("");
+            }
         } else if (event.key == "s" || (event.key == "p" && event.ctrlKey)) {
             if ($("div#search input").is(":focus")) {
                 return;
@@ -347,6 +352,7 @@ $(document).ready(function() {
 
     function filter(str) {
         visible++;
+        document.rarelyused_are_hidden = false;
         if (str.length == 0) {
             index.forEach(function(f) {
                 f.visible = visible;
