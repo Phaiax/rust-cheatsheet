@@ -35,6 +35,7 @@ pub fn make(r : &mut References, mut vector_box : &mut Group) {
     // boxed array -> Vec
     MethodLine::new().a_add_docs("into_vec")
                      .text("            = boxedarray.into_vec()")
+                     .rarelyused()
                      .finish(&mut r.vector, &mut vector_box);
 
     // From
@@ -73,9 +74,9 @@ pub fn make(r : &mut References, mut vector_box : &mut Group) {
 
     // first_mut, last_mut
     MethodLine::new().a_add_docs("first")       .text("  .first")
-                                  .a_add_docs("first_mut")   .text("<span>_mut</span>(); ")
-                                  .a_add_docs("last")        .text(".last")
-                                  .a_add_docs("last_mut")    .text("<span>_mut</span>();")
+                     .a_add_docs("first_mut")   .text("<span>_mut</span>(); ")
+                     .a_add_docs("last")        .text(".last")
+                     .a_add_docs("last_mut")    .text("<span>_mut</span>();")
                      .details("-&gt; Option")
                      .finish(&mut r.vector, &mut vector_box);
 
@@ -96,6 +97,7 @@ pub fn make(r : &mut References, mut vector_box : &mut Group) {
     MethodLine::new().a("iter.find")
                      .text("  .iter().find(|&amp;T| -> bool);")
                      .details("-&gt; Option")
+                     .tags("search scan")
                      .finish(&mut r.vector, &mut vector_box);
     r.iter.add_doc_for_method("iter.find", "find");
 
@@ -108,21 +110,25 @@ pub fn make(r : &mut References, mut vector_box : &mut Group) {
     // binary_search_by
     MethodLine::new().a_add_docs("binary_search_by")
                      .text("  .binary_search_by(|&amp;T|->Ordering);")
+                     .rarelyused()
                      .finish(&mut r.vector, &mut vector_box);
 
     // binary_search_by_key
     MethodLine::new().a_add_docs("binary_search_by_key")
                      .text("  .binary_search_by_key(Key, |&amp;T|->Key);")
+                     .rarelyused()
                      .finish(&mut r.vector, &mut vector_box);
 
     // ends_with
     MethodLine::new().a_add_docs("ends_with")
                      .text("  .ends_with(needle);")
+                     .rarelyused()
                      .finish(&mut r.vector, &mut vector_box);
 
     // starts_with
     MethodLine::new().a_add_docs("starts_with")
                      .text("  .starts_with(needle);")
+                     .rarelyused()
                      .finish(&mut r.vector, &mut vector_box);
 
     // ADDING
@@ -159,18 +165,21 @@ pub fn make(r : &mut References, mut vector_box : &mut Group) {
     MethodLine::new().a_add_docs("clone_from")
                      .text("  .clone_from(&amp;Vec&lt;T&gt;);")
                      .details("overrides self, if T:Clone")
+                     .rarelyused()
                      .finish(&mut r.vector, &mut vector_box);
 
     // clone_from_slice
     MethodLine::new().a_add_docs("clone_from_slice")
                      .text("  .clone_from_slice(&amp;[T]);")
                      .details("if T:Clone")
+                     .rarelyused()
                      .finish(&mut r.vector, &mut vector_box);
 
     // copy_from_slice
     MethodLine::new().a_add_docs("copy_from_slice")
                      .text("  .copy_from_slice(&amp;[T]);")
                      .details("if T:Copy (use memcpy)")
+                     .rarelyused()
                      .finish(&mut r.vector, &mut vector_box);
 
     // REMOVING
@@ -198,6 +207,7 @@ pub fn make(r : &mut References, mut vector_box : &mut Group) {
     MethodLine::new().a_add_docs("truncate")
                      .text("  .truncate(i);")
                      .details("cut until .len() = i")
+                     .rarelyused()
                      .finish(&mut r.vector, &mut vector_box);
 
     // drain
@@ -220,6 +230,7 @@ pub fn make(r : &mut References, mut vector_box : &mut Group) {
     // dedup
     MethodLine::new().a_add_docs("dedup")
                      .text("  .dedup();")
+                     .rarelyused()
                      .details("removes duplicates (if T:PartialEq)")
                      .finish(&mut r.vector, &mut vector_box);
 
@@ -288,6 +299,7 @@ pub fn make(r : &mut References, mut vector_box : &mut Group) {
     MethodLine::new().a_add_docs("into_boxed_slice")
                      .text("  .into_boxed_slice();")
                      .details("-&gt; Box&lt;T&gt;")
+                     .rarelyused()
                      .finish(&mut r.vector, &mut vector_box);
 
     // as_ref
@@ -300,6 +312,7 @@ pub fn make(r : &mut References, mut vector_box : &mut Group) {
     MethodLine::new().a_add_docs("to_vec")
                      .text("  .to_vec();")
                      .details("like clone(), if T:Clone")
+                     .rarelyused()
                      .finish(&mut r.vector, &mut vector_box);
 
     // as_slice
@@ -316,6 +329,7 @@ pub fn make(r : &mut References, mut vector_box : &mut Group) {
     // capacity
     MethodLine::new().a_add_docs("capacity")
                      .text("  .capacity();")
+                     .rarelyused()
                      .finish(&mut r.vector, &mut vector_box);
 
     // reserve
@@ -333,6 +347,7 @@ pub fn make(r : &mut References, mut vector_box : &mut Group) {
     // shrink_to_fit
     MethodLine::new().a_add_docs("shrink_to_fit")
                      .text("  .shrink_to_fit();")
+                     .rarelyused()
                      .finish(&mut r.vector, &mut vector_box);
 
     // MEMORY
@@ -371,6 +386,7 @@ pub fn make(r : &mut References, mut vector_box : &mut Group) {
     MethodLine::new().a_add_docs("cmp")     .text("  .cmp() ")
                      .a_add_docs("eq")      .text(".eq() ")
                      .a_add_docs("ne")      .text(".ne();")
+                     .rarelyused()
                      .details("T: PartialEq")
                      .finish(&mut r.vector, &mut vector_box);
 
@@ -379,6 +395,7 @@ pub fn make(r : &mut References, mut vector_box : &mut Group) {
                      .a_add_docs("le") .text(".le() ")
                      .a_add_docs("gt") .text(".gt() ")
                      .a_add_docs("ge") .text(".ge();")
+                     .rarelyused()
                      .details("if T:PartialOrd")
                      .finish(&mut r.vector, &mut vector_box);
 
@@ -387,37 +404,38 @@ pub fn make(r : &mut References, mut vector_box : &mut Group) {
     // hash
     MethodLine::new().a_add_docs("hash")
                      .text("  .hash(state: Hasher)")
+                     .rarelyused()
                      .details("if T:Hash")
                      .finish(&mut r.vector, &mut vector_box);
 
     // TRAITS
     vector_box.add_section("Traits");
 
-    MethodLine::new()
-        .a_add_docs("from")        .text("<code>From&lt;BinaryHeap&gt;</code>,")
+    MethodLine::no_code_tag()
+        .a_add_docs("from")        .text("<code>From&lt;BinaryHeap&gt;</code>, ")
         .a_add_docs("borrow")       .text("<code>Borrow")
-        .a_add_docs("borrow_mut")   .text("<span>Mut</span></code>,")
+        .a_add_docs("borrow_mut")   .text("<span>Mut</span></code>, ")
         .a_add_docs("clone")        .text("<code>Clone ")
-        .a_add_docs("clone_from")   .text("<span>+</span></code>,")
+        .a_add_docs("clone_from")   .text("<span>+</span></code>, ")
         .a_add_docs("hash")         .text("<code>Hash ")
-        .a_add_docs("hash_slice")   .text("<span>+</span></code>,")
+        .a_add_docs("hash_slice")   .text("<span>+</span></code>, ")
         .a_add_docs("index")        .text("<code>Index")
-        .a_add_docs("index_mut")    .text("<span>Mut</span></code>,")
+        .a_add_docs("index_mut")    .text("<span>Mut</span></code>, ")
         .a_add_docs("deref")        .text("<code>Deref")
-        .a_add_docs("deref_mut")    .text("<span>Mut</span></code>,")
-        .a("trait.FromIterator")    .text("<code>FromIterator</code>,")
-        .a("trait.IntoIterator")    .text("<code>IntoIterator</code>,")
-        .a_add_docs("extend")       .text("<code>Extend</code>,")
-        .a("trait.PartialEq")       .text("<code>PartialEq</code>,")
-        .a("trait.PartialOrd")      .text("<code>PartialOrd</code>,")
-        .a("trait.Eq")              .text("<code>Eq</code>,")
-        .a("trait.Ord")             .text("<code>Ord</code>,")
-        .a_add_docs("drop")         .text("<code>Drop</code>,")
-        .a_add_docs("default")      .text("<code>Default</code>,")
-        .a_add_docs("fmt")          .text("<code>Debug (if T:Debug)</code>,")
-        .a_add_docs("as_ref")       .text("<code>AsRef</code>,")
-        .a_add_docs("as_mut")       .text("<code>AsMut</code>,")
-        .a_add_docs("from-1")       .text("<code>From</code>,")
+        .a_add_docs("deref_mut")    .text("<span>Mut</span></code>, ")
+        .a("trait.FromIterator")    .text("<code>FromIterator</code>, ")
+        .a("trait.IntoIterator")    .text("<code>IntoIterator</code>, ")
+        .a_add_docs("extend")       .text("<code>Extend</code>, ")
+        .a("trait.PartialEq")       .text("<code>PartialEq</code>, ")
+        .a("trait.PartialOrd")      .text("<code>PartialOrd</code>, ")
+        .a("trait.Eq")              .text("<code>Eq</code>, ")
+        .a("trait.Ord")             .text("<code>Ord</code>, ")
+        .a_add_docs("drop")         .text("<code>Drop</code>, ")
+        .a_add_docs("default")      .text("<code>Default</code>, ")
+        .a_add_docs("fmt")          .text("<code>Debug (if T:Debug)</code>, ")
+        .a_add_docs("as_ref")       .text("<code>AsRef</code>, ")
+        .a_add_docs("as_mut")       .text("<code>AsMut</code>, ")
+        .a_add_docs("from-1")       .text("<code>From</code>, ")
         .a("trait.Write")           .text("<code>Write</code>")
         .finish(&mut r.vector, &mut vector_box);
 

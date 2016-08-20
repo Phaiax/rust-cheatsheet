@@ -44,7 +44,7 @@
         text-decoration: underline;
     }
 
-    section header {
+    section > header {
         font-family: "Nimbus Sans L";
         font-weight: bold;
         text-align: center;
@@ -52,14 +52,21 @@
         padding: 3px;
         font-size: 0.8em;
     }
-    section div {
+    section > div {
         padding: 0px 8px ;
         clear: right;
     }
-    section div:nth-child(even) {
-        background-color: rgba(0, 0, 0, 0.01);
+    section > div.rarelyused {
+        display: none;
+        background-color: rgba(0, 0, 0, 0.08) !important;
     }
-    section div code {
+    section > div.rarelyused:nth-child(even) {
+        background-color: rgba(0, 0, 0, 0.10) !important;
+    }
+    section > div:nth-child(even) {
+        background-color: rgba(0, 0, 0, 0.02);
+    }
+    section > div code {
         white-space: pre;
         font-size: 0.7em;
         font-family: "Nimbus Sans L";
@@ -72,10 +79,10 @@
     a:hover {
         text-decoration: underline;
     }
-    section div span {
+    section > div span {
         color: #53dafc;
     }
-    section div details {
+    section > div details {
         display: block;
         //line-height: 0.4em;
         float: right;
@@ -85,7 +92,7 @@
         text-align: right;
     }
 
-    section hr {
+    section > hr {
         margin: 0px 0px -2px 0px;
         border: 0;
         height: 0;
@@ -192,6 +199,7 @@
     body {
         margin-top: 25px;
     }
+
     </style>
 </head>
 
@@ -275,6 +283,8 @@ $(document).ready(function() {
     });
     $("#overlaycontent").addClass("docblock");
 
+    document.rarelyused_are_hidden = true;
+
     $(document).keypress(function(event) {
         if (event.key == "Escape") {
             $("#overlay").hide();
@@ -285,6 +295,19 @@ $(document).ready(function() {
             event.preventDefault();
             $("div#search input").val("");
             $("div#search input").focus();
+        } else if (event.key == "h" || (event.key == "h" && event.ctrlKey)) {
+            if ($("div#search input").is(":focus")) {
+                return;
+            }
+            event.preventDefault();
+            if (document.rarelyused_are_hidden) {
+                $("section > div.rarelyused").slideDown();
+                document.rarelyused_are_hidden = false;
+            } else {
+                $("section > div.rarelyused").slideUp();
+                document.rarelyused_are_hidden = true;
+            }
+
         }
     });
 
@@ -295,7 +318,7 @@ $(document).ready(function() {
             var line = this;
             texts.push( {"text" : line.innerText,
                          "dom" : line,
-                         "tags" : [],
+                         "tags" : $(line).attr("data-tags"),
                          "visible" : 0 } );
         });
         return texts;

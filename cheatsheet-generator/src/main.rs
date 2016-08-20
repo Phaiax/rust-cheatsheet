@@ -149,6 +149,8 @@ pub struct MethodLine {
     buf : String,
     code_closed : bool,
     link_open : bool,
+    rarelyused : bool,
+    tags : String,
 }
 
 
@@ -168,14 +170,26 @@ impl MethodLine {
     /// Returns an object that has the method .doc(&mut Reference), that can be used to
     /// take care of the popup.
     pub fn new() -> MethodLine {
-        let mut m = MethodLine {
+        let mut m = Self::no_code_tag();
+        m.code_closed = false;
+        m.buf.push_str("<code>");
+        m
+    }
+
+    pub fn no_code_tag() -> MethodLine {
+        MethodLine {
             docids : vec![],
             buf : String::with_capacity(300),
-            code_closed : false,
+            code_closed : true,
             link_open : false,
-        };
-        m.buf.push_str("<div><code>");
-        m
+            rarelyused : false,
+            tags : "".into(),
+        }
+    }
+
+    pub fn rarelyused(mut self) -> MethodLine {
+        self.rarelyused = true;
+        self
     }
 
     /// Adds text
@@ -192,9 +206,6 @@ impl MethodLine {
 
     /// Adds a link to some extern docs (e.g. Trait docs)
     pub fn a(mut self, docid : &str) -> MethodLine {
-        if self.code_closed {
-            panic!("Details started, no more links allowed");
-        }
         self.close_link();
         self.buf.push_str("<a data-doc=\"");
         self.buf.push_str(docid);
@@ -237,6 +248,13 @@ impl MethodLine {
         }
     }
 
+    fn make_start_tag(&self) -> String {
+        format!("<div class=\"{}\" data-tags=\"{}\">",
+                 if self.rarelyused { "rarelyused" } else { "" },
+                 &self.tags,
+        )
+    }
+
     /// Adds <details> part.
     pub fn details(mut self, details : &str)  -> MethodLine {
         self.close_code();
@@ -244,6 +262,11 @@ impl MethodLine {
         self.buf.push_str(details);
         self.buf.push_str("</details>");
         return self;
+    }
+
+    pub fn tags(mut self, tags : &str) -> MethodLine {
+        self.tags = tags.into();
+        self
     }
 
     /// Include docs
@@ -257,6 +280,7 @@ impl MethodLine {
     /// Adds the resulting html to the group
     pub fn to(mut self, group : &mut Group) {
         self.close_code();
+        group.buf.push(self.make_start_tag());
         self.buf.push_str("</div>");
         group.buf.push(self.buf);
     }

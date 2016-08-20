@@ -163,17 +163,17 @@ pub fn make(r : &mut References, mut vector_box : &mut Group) {
     // TRAITS
     vector_box.add_section("Traits");
 
-    MethodLine::new()
+    MethodLine::no_code_tag()
         .a("hm.clone")        .text("<code>Clone ")
-        .a("hm.clone_from")    .text("<span>+</span></code>,")
-        .a("hm.index")         .text("<code>Index</code>,")
-        .a("trait.FromIterator") .text("<code>FromIterator</code>,")
-        .a("trait.IntoIterator") .text("<code>IntoIterator</code>,")
+        .a("hm.clone_from")    .text("<span>+</span></code>, ")
+        .a("hm.index")         .text("<code>Index</code>, ")
+        .a("trait.FromIterator") .text("<code>FromIterator</code>, ")
+        .a("trait.IntoIterator") .text("<code>IntoIterator</code>, ")
         .a("hm.extend")        .text("<code>Extend ")
-        .a("hm.extend-1")      .text("<span>+</span></code>,")
-        .a("trait.PartialEq")  .text("<code>PartialEq</code>,")
-        .a("trait.Eq")         .text("<code>Eq</code>,")
-        .a_add_docs("default") .text("<code>Default</code>,")
+        .a("hm.extend-1")      .text("<span>+</span></code>, ")
+        .a("trait.PartialEq")  .text("<code>PartialEq</code>, ")
+        .a("trait.Eq")         .text("<code>Eq</code>, ")
+        .a_add_docs("default") .text("<code>Default</code>, ")
         .a_add_docs("fmt")     .text("<code>Debug (if K,V:Debug)</code>")
                      .finish(&mut r.hm, &mut vector_box);
 
