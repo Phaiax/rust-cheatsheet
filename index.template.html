@@ -173,22 +173,43 @@
         display: block !important;
     }
 
+    div#hiddendocs {
+        display: none;
+    }
+
+    div#search {
+        position: fixed;
+        top:0;
+        left:0;
+        right: 0;
+        height: 20;
+    }
+    div#search input {
+        margin: 2px;
+        padding: 2px;
+    }
+
+    body {
+        margin-top: 25px;
+    }
     </style>
 </head>
 
 <body>
 
+<div id="search">
+    <input type="text" name="filter" placeholder="Click or press 's' or Ctrl+P to filter, 'Escape' to reset.">
+</div>
 
 
-
-<section id="vec" class="red">
+<section id="vec" class="red filterable">
     <header><a data-doc="vec.vec">Variable sized arrays / Vectors</a></header>
     {VEC}
 </section>
 
 
 
-<section id="vec" class="green">
+<section id="vec" class="green filterable">
     <header><a data-doc="hm.hm">Hashmaps / Dicts</a></header>
     {HASHMAP}
 </section>
@@ -206,7 +227,9 @@
 <div class="clear_right"></div>
 </section>
 
+<div id="hiddendocs">
 {{DOC}}
+</div>
 
 <div id="overlay">
     <div id="overlayclose">X</div>
@@ -216,6 +239,7 @@
 
 
 <script src="jquery-2.2.3.min.js"></script>
+<script src="fuse.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
     $("a[data-doc]").each(function() {
@@ -250,6 +274,86 @@ $(document).ready(function() {
         event.stopPropagation();
     });
     $("#overlaycontent").addClass("docblock");
+
+    $(document).keypress(function(event) {
+        if (event.key == "Escape") {
+            $("#overlay").hide();
+        } else if (event.key == "s" || (event.key == "p" && event.ctrlKey)) {
+            if ($("div#search input").is(":focus")) {
+                return;
+            }
+            event.preventDefault();
+            $("div#search input").val("");
+            $("div#search input").focus();
+        }
+    });
+
+
+    function prepare() {
+        var texts = [];
+        $("section.filterable > div").each(function() {
+            var line = this;
+            texts.push( {"text" : line.innerText,
+                         "dom" : line,
+                         "tags" : [],
+                         "visible" : 0 } );
+        });
+        return texts;
+    }
+
+    function make_fuse(index) {
+        var options = {
+          caseSensitive: false,
+          shouldSort: false,
+          tokenize: false,
+          threshold: 0.2,
+          location: 0,
+          distance: 100,
+          maxPatternLength: 32,
+          keys: [
+            "text",
+            "tags"
+          ]
+        };
+        return new Fuse(index, options); // "list" is the item array
+    }
+
+    var visible = 0;
+    var index = prepare();
+    var fuse = make_fuse(index);
+
+    function filter(str) {
+        visible++;
+        if (str.length == 0) {
+            index.forEach(function(f) {
+                f.visible = visible;
+            });
+        } else {
+            var result = fuse.search(str);
+            console.log("==========");
+            console.log(str);
+            console.log(visible);
+            console.log(result.length);
+            document.r = result;
+            result.forEach(function(f) {
+                f.visible = visible;
+                console.log(f.visible);
+            });
+            console.log(result);
+        }
+        index.forEach(function(f) {
+            if (f.visible == visible) {
+                $(f.dom).show();
+            } else {
+                $(f.dom).hide();
+            }
+        });
+        console.log(index);
+    }
+
+    $("div#search input").keyup(function () {
+        filter($("div#search input").val());
+    });
 
 
 });
