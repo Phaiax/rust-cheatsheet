@@ -80,7 +80,7 @@
         text-decoration: underline;
     }
     section > div span {
-        color: #53dafc;
+        color: #ae3a3c;
     }
     section > div details {
         display: block;
@@ -222,6 +222,11 @@
     {HASHMAP}
 </section>
 
+<section id="vec" class="green filterable">
+    <header><a data-doc="option.option">Option</a></header>
+    {OPTION}
+</section>
+
 
 
 
@@ -326,6 +331,7 @@ $(document).ready(function() {
                          "tags" : $(line).attr("data-tags"),
                          "visible" : 0 } );
         });
+        document.texts = texts;
         return texts;
     }
 
@@ -336,7 +342,7 @@ $(document).ready(function() {
           tokenize: false,
           threshold: 0.2,
           location: 0,
-          distance: 100,
+          distance: 10000,
           maxPatternLength: 32,
           keys: [
             "text",
@@ -359,16 +365,10 @@ $(document).ready(function() {
             });
         } else {
             var result = fuse.search(str);
-            console.log("==========");
-            console.log(str);
-            console.log(visible);
-            console.log(result.length);
             document.r = result;
             result.forEach(function(f) {
                 f.visible = visible;
-                console.log(f.visible);
             });
-            console.log(result);
         }
         index.forEach(function(f) {
             if (f.visible == visible) {
@@ -377,7 +377,6 @@ $(document).ready(function() {
                 $(f.dom).hide();
             }
         });
-        console.log(index);
     }
 
     $("div#search input").keyup(function () {

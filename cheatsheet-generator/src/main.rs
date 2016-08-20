@@ -17,6 +17,7 @@ use rand::random;
 
 mod vector;
 mod hashmap;
+mod option;
 
 fn main() {
 
@@ -31,6 +32,10 @@ fn main() {
     hashmap::make(&mut r, &mut hashmap_box);
     builder.append_group(hashmap_box);
 
+    let mut option_box = Group::new("{OPTION}");
+    option::make(&mut r, &mut option_box);
+    builder.append_group(option_box);
+
     r.from_iter.add_doc_by_element("trait.FromIterator", sel("section#main"));
     r.into_iter.add_doc_by_element("trait.IntoIterator", sel("section#main"));
     r.partial_ord.add_doc_by_element("trait.PartialOrd", sel("section#main"));
@@ -38,6 +43,11 @@ fn main() {
     r.ord.add_doc_by_element("trait.Ord", sel("section#main"));
     r.eq.add_doc_by_element("trait.Eq", sel("section#main"));
     r.write.add_doc_by_element("trait.Write", sel("section#main"));
+    r.hash.add_doc_by_element("trait.Hash", sel("section#main"));
+    r.debug.add_doc_by_element("trait.Debug", sel("section#main"));
+    r.copy.add_doc_by_element("trait.Copy", sel("section#main"));
+    r.clone.add_doc_by_element("trait.Clone", sel("section#main"));
+    r.default.add_doc_by_element("trait.Default", sel("section#main"));
 
 
     builder.append_docs(r);
@@ -198,6 +208,14 @@ impl MethodLine {
         self
     }
 
+    /// Adds text in <span>
+    pub fn span(mut self, text : &str) -> MethodLine {
+        self.buf.push_str("<span>");
+        self.buf.push_str(text);
+        self.buf.push_str("</span>");
+        self
+    }
+
     /// Adds a formated method "   .{name}();" and includes documentation
     pub fn single_method_with_doc(self, methodname : &str)  -> MethodLine {
         self.a_add_docs(methodname)
@@ -238,6 +256,13 @@ impl MethodLine {
             self.buf.push_str("</code>");
             self.code_closed = true;
         }
+    }
+
+    fn br(mut self) -> MethodLine {
+        self.close_code();
+        self.buf.push_str(" <code>");
+        self.code_closed = false;
+        self
     }
 
     /// Closes <a> tag if still open
@@ -593,6 +618,12 @@ pub struct References {
     pub write : Reference,
     pub iter : Reference,
     pub hm : Reference,
+    pub option : Reference,
+    pub hash : Reference,
+    pub debug : Reference,
+    pub copy : Reference,
+    pub clone : Reference,
+    pub default : Reference,
 }
 
 
@@ -610,6 +641,12 @@ impl References {
             write : Reference::new("https://doc.rust-lang.org/std/io/trait.Write.html"),
             iter : Reference::new("https://doc.rust-lang.org/std/slice/struct.Iter.html"),
             hm : Reference::new("https://doc.rust-lang.org/std/collections/struct.HashMap.html"),
+            option : Reference::new("https://doc.rust-lang.org/std/option/enum.Option.html"),
+            hash : Reference::new("https://doc.rust-lang.org/std/hash/trait.Hash.html"),
+            debug : Reference::new("https://doc.rust-lang.org/std/fmt/trait.Debug.html"),
+            copy : Reference::new("https://doc.rust-lang.org/std/marker/trait.Copy.html"),
+            clone : Reference::new("https://doc.rust-lang.org/std/clone/trait.Clone.html"),
+            default : Reference::new("https://doc.rust-lang.org/std/default/trait.Default.html"),
 
         }
     }
@@ -626,6 +663,12 @@ impl References {
         builder.append_doc(self.write);
         builder.append_doc(self.iter);
         builder.append_doc(self.hm);
+        builder.append_doc(self.option);
+        builder.append_doc(self.hash);
+        builder.append_doc(self.debug);
+        builder.append_doc(self.copy);
+        builder.append_doc(self.clone);
+        builder.append_doc(self.default);
     }
 }
 
