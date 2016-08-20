@@ -579,11 +579,15 @@ impl Reference {
             // let 'er go!
             .send().unwrap();
 
+        // We want to convert this: https://doc.rust-lang.org/std/default/trait.Default.html
+        // into                     https://doc.rust-lang.org/std/default/
+        let l = url.len() - url.rsplit("/").next().unwrap().len();
+        let url = &url[0..l];
+
         // Read the Response.
         let mut body = String::new();
         res.read_to_string(&mut body).unwrap();
-
-        body
+        body.replace("href='", &format!("target='_blank' href='{}", url))
     }
 }
 
