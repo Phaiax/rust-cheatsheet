@@ -3,6 +3,7 @@ extern crate scraper;
 extern crate hyper;
 extern crate ego_tree;
 extern crate sha2;
+extern crate rand;
 
 use std::path::Path;
 use std::fs::File;
@@ -12,6 +13,7 @@ use scraper::element_ref::ElementRef;
 use hyper::Client;
 use hyper::header::Connection;
 use sha2::{Sha256, Digest};
+use rand::random;
 
 mod vector;
 mod hashmap;
@@ -53,7 +55,7 @@ pub fn a1(id : &str) -> String {
 
 pub struct Group {
     replacement_key : String,
-    buf : Vec<String>,
+    pub buf : Vec<String>,
 }
 
 /// Represents a group of consecutive lines in the cheatsheet.
@@ -101,6 +103,7 @@ impl Group {
         }
     }
 
+
     /// Link to external page
     ///
     /// ```html
@@ -139,6 +142,128 @@ impl Group {
         self.buf.push(format!("<h6>{}</h6>", title));
     }
 }
+
+pub struct MethodLine {
+    /// (docid, methodname)
+    docids : Vec<(String, String)>,
+    buf : String,
+    code_closed : bool,
+    link_open : bool,
+}
+
+
+impl MethodLine {
+    /// Adds a new line to a
+    /// ```html
+    ///    <div>
+    ///       <code><a data-doc=%id>  %line </a></code>
+    ///       <details> %details </details>
+    ///    </div>
+    /// ```
+    /// Where %line =
+    /// ```ign
+    ///                 "    .%methodname();"                if `format` == None
+    ///                 %format.replace({1}, %methodname)    if `format` = Some(%format)
+    /// ```
+    /// Returns an object that has the method .doc(&mut Reference), that can be used to
+    /// take care of the popup.
+    pub fn new() -> MethodLine {
+        let mut m = MethodLine {
+            docids : vec![],
+            buf : String::with_capacity(300),
+            code_closed : false,
+            link_open : false,
+        };
+        m.buf.push_str("<div><code>");
+        m
+    }
+
+    /// Adds text
+    pub fn text(mut self, text : &str) -> MethodLine {
+        self.buf.push_str(text);
+        self
+    }
+
+    /// Adds a formated method "   .{name}();" and includes documentation
+    pub fn single_method_with_doc(self, methodname : &str)  -> MethodLine {
+        self.a_add_docs(methodname)
+            .text(format!("  .{}();", methodname).as_ref())
+    }
+
+    /// Adds a link to some extern docs (e.g. Trait docs)
+    pub fn a(mut self, docid : &str) -> MethodLine {
+        self.close_link();
+        self.buf.push_str("<a data-doc=\"");
+        self.buf.push_str(docid);
+        self.buf.push_str("\">");
+        self.link_open = true;
+        self
+    }
+
+    /// Start new link and include docs, specify id for later use
+    pub fn a_add_docs_use_id(mut self, methodname : &str, docid : &str) -> MethodLine {
+        self.docids.push((docid.into(), methodname.into()));
+        self.a(docid)
+    }
+
+    /// Start new link and include docs
+    pub fn a_add_docs(mut self, methodname : &str) -> MethodLine {
+        let docid = Self::docid(methodname);
+        self.a_add_docs_use_id(methodname, &docid)
+    }
+
+    fn docid(methodid : &str) -> String{
+        format!("{}.{}", random::<u64>(), methodid)
+    }
+
+    /// Closes <code> tag if still open
+    fn close_code(&mut self) {
+        self.close_link();
+        if self.code_closed {
+            panic!("Details started, no more links allowed");
+        }
+        self.buf.push_str("</code>");
+        self.code_closed = true;
+    }
+
+    /// Closes <a> tag if still open
+    fn close_link(&mut self) {
+        if self.link_open {
+            self.buf.push_str("</a>");
+            self.link_open = false;
+        }
+    }
+
+    /// Adds <details> part.
+    pub fn details(mut self, details : &str)  -> MethodLine {
+        self.close_code();
+        self.buf.push_str("<details>");
+        self.buf.push_str(details);
+        self.buf.push_str("</details>");
+        return self;
+    }
+
+    /// Include docs
+    pub fn doc(self, doc : &mut Reference) -> MethodLine {
+        for ref docid_methodname in &self.docids {
+            doc.add_doc_for_method(&docid_methodname.0, &docid_methodname.1);
+        }
+        self
+    }
+
+    /// Adds the resulting html to the group
+    pub fn to(mut self, group : &mut Group) {
+        self.close_code();
+        self.buf.push_str("</div>");
+        group.buf.push(self.buf);
+    }
+
+    /// like .doc(d).to(r)
+    pub fn finish(self, mut doc : &mut Reference, mut group : &mut Group) {
+        self.doc(&mut doc).to(&mut group);
+    }
+}
+
 
 /// Opens `../index.template.html` and replaces
 pub struct Builder {
@@ -410,13 +535,6 @@ impl Reference {
     }
 }
 
-
-/// Shortcut for Selector::parse
-pub fn sel(selector : &str) -> Selector {
-    Selector::parse(selector).expect(&format!("Selector {} not found.", selector))
-}
-
-
 pub struct Method {
     name : String,
     id : String
@@ -427,6 +545,14 @@ impl Method {
         doc.add_doc_for_method(&self.id, &self.name)
     }
 }
+
+
+/// Shortcut for Selector::parse
+pub fn sel(selector : &str) -> Selector {
+    Selector::parse(selector).expect(&format!("Selector {} not found.", selector))
+}
+
+
 
 pub struct References {
     pub vector : Reference,

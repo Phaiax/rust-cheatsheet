@@ -1,7 +1,7 @@
 
-use ::{a1,a0,References,Group,sel};
+use ::{a1,a0,References,Group,sel,MethodLine};
 
-pub fn make(r : &mut References, vector_box : &mut Group) {
+pub fn make(r : &mut References, mut vector_box : &mut Group) {
 
    // Refernce: add_method_line(id, methodname, format, details)
 
@@ -17,6 +17,9 @@ pub fn make(r : &mut References, vector_box : &mut Group) {
     r.vector.add_doc_by_element("vec.vec", sel("section#main div.docblock"));
 
     // new
+    MethodLine::new().a_add_docs("new")
+                .text("let mut vec: Vec&lt;T&gt; = Vec::new();")
+                .finish(&mut r.vector, &mut vector_box);
     vector_box.add_method_line("vec.new", "new", Some("let mut vec: Vec&lt;T&gt; = Vec::new();"), "")
               .doc(&mut r.vector);
     // with_capacity
