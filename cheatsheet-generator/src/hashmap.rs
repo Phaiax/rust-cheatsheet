@@ -1,4 +1,4 @@
-use ::{References,Group,sel,MethodLine};
+use ::{References,Group,sel,MethodLine,Doc};
 
 pub fn make(r : &mut References, mut section : &mut Group) {
 
@@ -163,19 +163,27 @@ pub fn make(r : &mut References, mut section : &mut Group) {
     // TRAITS
     section.add_section("Traits");
 
-    MethodLine::no_code_tag()
-        .a("hm.clone")        .text("<code>Clone ")
-        .a("hm.clone_from")    .text("<span>+</span></code>, ")
-        .a("hm.index")         .text("<code>Index</code>, ")
-        .a("trait.FromIterator") .text("<code>FromIterator</code>, ")
-        .a("trait.IntoIterator") .text("<code>IntoIterator</code>, ")
-        .a("hm.extend")        .text("<code>Extend ")
-        .a("hm.extend-1")      .text("<span>+</span></code>, ")
-        .a("trait.PartialEq")  .text("<code>PartialEq</code>, ")
-        .a("trait.Eq")         .text("<code>Eq</code>, ")
-        .a_add_docs("default") .text("<code>Default</code>, ")
-        .a_add_docs("fmt")     .text("<code>Debug (if K,V:Debug)</code>")
-                     .finish(&mut r.hm, &mut section);
+
+    MethodLine::new()
+        .a("trait.Clone")                       .text("Clone") .br()
+        .a_select_add_docs(Doc::Impl("clone".into())).span("clone() clone_from() |") .br()
+        .a("trait.PartialEq")                   .text("PartialEq") .br()
+        .a_select_add_docs(Doc::Impl("eq".into())).span("eq() ne() |") .br()
+        .a("trait.Eq")                          .text("Eq |") .br()
+        .a("trait.Debug")                       .text("Debug") .br()
+        .a_select_add_docs(Doc::Impl("fmt".into()))   .span("fmt() |") .br()
+        .a("trait.Default")                       .text("Default") .br()
+        .a_select_add_docs(Doc::Impl("default".into()))   .span("default() |") .br()
+        .a("trait.Index")                       .text("Index") .br()
+        .a_select_add_docs(Doc::Impl("index".into()))   .span("index() |") .br()
+        .a("trait.IntoIterator")                .text("IntoIterator") .br()
+        .a_select_add_docs(Doc::Nav("into_iter".into(), "pr".into(), "pnnnnn".into())).span("into_iter() |") .br()
+        .a("trait.FromIterator")                .text("FromIterator") .br()
+        .a_select_add_docs(Doc::Impl("from_iter".into())).span("from_iter() |") .br()
+        .a("trait.Extend")                .text("Extend") .br()
+        .a_select_add_docs(Doc::LastImpl("extend".into())).span("extend() |") .br()
+        .finish(&mut r.hm, &mut section);
+
 
 
 }

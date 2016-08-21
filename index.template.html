@@ -73,6 +73,9 @@
         font-weight: bold;
         line-height: 0.4em;
     }
+    section > div code a {
+        white-space: normal;
+    }
     a {
         cursor: pointer;
     }
@@ -174,6 +177,18 @@
         /* needed styles for the overlay */
         z-index: 10; /* keep on top of other elements on the page */
 
+    }
+
+    div.impl-items {
+        margin-left: 20px;
+    }
+
+    div.since {
+        float: right;
+    }
+
+    pre.rust {
+        background-color: #E0E0E0;
     }
 
     div#overlaycontent {

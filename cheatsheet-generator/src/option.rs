@@ -1,4 +1,4 @@
-use ::{References,Group,sel,MethodLine};
+use ::{References,Group,sel,MethodLine,Doc};
 
 pub fn make(r : &mut References, mut section : &mut Group) {
 
@@ -166,34 +166,28 @@ pub fn make(r : &mut References, mut section : &mut Group) {
     section.add_section("Traits");
 
     MethodLine::new()
-        .a("trait.Hash")        .text("Hash") .br()
-        .a_add_docs("hash")     .span("+") .br()
-        .a_add_docs("hash_slice")     .span("+,") .br()
-        .a("trait.Debug")        .text("Debug") .br()
-        .a_add_docs("fmt")     .span("fmt() |") .br()
-        .a("trait.Ord")        .text("Ord") .br()
-        .a_add_docs("cmp")     .span("cmp() |") .br()
-        .a("trait.Eq")        .text("Eq |") .br()
-        .a("trait.PartialOrd") .text("PartialOrd") .br()
-        .a_add_docs("partial_cmp")     .span("partial_cmp()") .br()
-        .a_add_docs("lt")     .span("lt()") .br()
-        .a_add_docs("le")     .span("le()") .br()
-        .a_add_docs("gt")     .span("gt()") .br()
-        .a_add_docs("ge")     .span("ge() |") .br()
-        .a("trait.PartialEq") .text("PartialEq") .br()
-        .a_add_docs("eq")     .span("eq()") .br()
-        .a_add_docs("ne")     .span("ne() |") .br()
-        .a("trait.Copy")        .text("Copy |") .br()
-        .a("trait.Clone")        .text("Clone") .br()
-        .a_add_docs("clone")     .span("clone()") .br()
-        .a_add_docs("clone_from")     .span("clone_from(src) |") .br()
-        .a("trait.Default")        .text("Default") .br()
-        .a_add_docs("default")     .span("default() |") .br()
-        .a("trait.IntoIterator") .text("IntoIterator") .br()
-        .a_add_docs("into_iter")     .span("into_iter() |") .br()
-        .a("trait.FromIterator") .text("FromIterator") .br()
-        .a_add_docs("from_iter")     .span("from_iter()") .br()
+        .a("trait.Hash")                        .text("Hash") .br()
+        .a_select_add_docs(Doc::Impl("hash".into()))   .span("hash() |") .br()
+        .a("trait.Debug")                       .text("Debug") .br()
+        .a_select_add_docs(Doc::Impl("fmt".into()))   .span("fmt() |") .br()
+        .a("trait.Ord")                         .text("Ord") .br()
+        .a_select_add_docs(Doc::Impl("cmp".into()))   .span("cmp() |") .br()
+        .a("trait.Eq")                          .text("Eq |") .br()
+        .a("trait.PartialOrd")                  .text("PartialOrd") .br()
+        .a_select_add_docs(Doc::Impl("partial_cmp".into())).span("partial_cmp() lt() le() gt() ge() |") .br()
+        .a("trait.PartialEq")                   .text("PartialEq") .br()
+        .a_select_add_docs(Doc::Impl("eq".into())).span("eq() ne() |") .br()
+        .a("trait.Copy")                        .text("Copy |") .br()
+        .a("trait.Clone")                       .text("Clone") .br()
+        .a_select_add_docs(Doc::Impl("clone".into())).span("clone() clone_from() |") .br()
+        .a("trait.Default")                     .text("Default") .br()
+        .a_select_add_docs(Doc::Impl("default".into()))   .span("default() |") .br()
+        .a("trait.IntoIterator")                .text("IntoIterator") .br()
+        .a_select_add_docs(Doc::Nav("into_iter".into(), "pr".into(), "pnnnnn".into())).span("into_iter() |") .br()
+        .a("trait.FromIterator")                .text("FromIterator") .br()
+        .a_select_add_docs(Doc::LastImpl("from_iter".into())).span("from_iter() |") .br()
         .finish(&mut r.option, &mut section);
+
 
 
 }

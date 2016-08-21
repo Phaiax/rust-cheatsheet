@@ -1,5 +1,5 @@
 
-use ::{References,Group,sel,MethodLine};
+use ::{References,Group,sel,MethodLine,Doc};
 
 pub fn make(r : &mut References, mut section : &mut Group) {
 
@@ -411,32 +411,67 @@ pub fn make(r : &mut References, mut section : &mut Group) {
     // TRAITS
     section.add_section("Traits");
 
-    MethodLine::no_code_tag()
-        .a_add_docs("from")        .text("<code>From&lt;BinaryHeap&gt;</code>, ")
-        .a_add_docs("borrow")       .text("<code>Borrow")
-        .a_add_docs("borrow_mut")   .text("<span>Mut</span></code>, ")
-        .a_add_docs("clone")        .text("<code>Clone ")
-        .a_add_docs("clone_from")   .text("<span>+</span></code>, ")
-        .a_add_docs("hash")         .text("<code>Hash ")
-        .a_add_docs("hash_slice")   .text("<span>+</span></code>, ")
-        .a_add_docs("index")        .text("<code>Index")
-        .a_add_docs("index_mut")    .text("<span>Mut</span></code>, ")
-        .a_add_docs("deref")        .text("<code>Deref")
-        .a_add_docs("deref_mut")    .text("<span>Mut</span></code>, ")
-        .a("trait.FromIterator")    .text("<code>FromIterator</code>, ")
-        .a("trait.IntoIterator")    .text("<code>IntoIterator</code>, ")
-        .a_add_docs("extend")       .text("<code>Extend</code>, ")
-        .a("trait.PartialEq")       .text("<code>PartialEq</code>, ")
-        .a("trait.PartialOrd")      .text("<code>PartialOrd</code>, ")
-        .a("trait.Eq")              .text("<code>Eq</code>, ")
-        .a("trait.Ord")             .text("<code>Ord</code>, ")
-        .a_add_docs("drop")         .text("<code>Drop</code>, ")
-        .a_add_docs("default")      .text("<code>Default</code>, ")
-        .a_add_docs("fmt")          .text("<code>Debug (if T:Debug)</code>, ")
-        .a_add_docs("as_ref")       .text("<code>AsRef</code>, ")
-        .a_add_docs("as_mut")       .text("<code>AsMut</code>, ")
-        .a_add_docs("from-1")       .text("<code>From</code>, ")
-        .a("trait.Write")           .text("<code>Write</code>")
+    MethodLine::new()
+        .a("trait.From")                       .text("From&lt;BinaryHeap&gt;") .br()
+        .a_select_add_docs(Doc::Impl("from".into())).span("from() |") .br()
+
+        .a("trait.Borrow")                       .text("Borrow")
+        .a("trait.BorrowMut")                       .span("Mut") .br()
+        .a_select_add_docs(Doc::Impl("borrow".into())).span("borrow") .br()
+        .a_select_add_docs(Doc::Impl("borrow_mut".into())).span("/_mut() |") .br()
+
+        .a("trait.Clone")                       .text("Clone") .br()
+        .a_select_add_docs(Doc::Impl("clone".into())).span("clone/_from() |") .br()
+
+        .a("trait.Hash")                       .text("Hash") .br()
+        .a_select_add_docs(Doc::Impl("hash".into())).span("hash/_slice() |") .br()
+
+        .a("trait.Index")                .text("Index")
+        .a("trait.IndexMut")             .span("Mut") .br()
+        .a_select_add_docs(Doc::Nav("index".into(), "pr".into(), "pnnnnnnnnnnnnnnnnnnnnnnnnnnn".into())).span("index/_mut()") .br()
+
+        .a("trait.Deref")                .text("Deref")
+        .a("trait.DerefMut")             .span("Mut") .br()
+        .a_select_add_docs(Doc::Impl("deref".into())).span("deref")
+        .a_select_add_docs(Doc::Impl("deref_mut".into())).span("/_mut() |") .br()
+
+        .a("trait.FromIterator")                .text("FromIterator") .br()
+        .a_select_add_docs(Doc::Impl("from_iter".into())).span("from_iter() |") .br()
+        .a("trait.IntoIterator")                .text("IntoIterator") .br()
+        .a_select_add_docs(Doc::Nav("into_iter".into(), "pr".into(), "pnnnnn".into())).span("into_iter() |") .br()
+
+        .a("trait.Extend")                .text("Extend") .br()
+        .a_select_add_docs(Doc::LastImpl("extend".into())).span("extend() |") .br()
+
+        .a("trait.PartialEq")                   .text("PartialEq") .br()
+        .a_select_add_docs(Doc::Impl("eq".into())).span("eq() ne() |") .br()
+
+        .a("trait.PartialOrd")                  .text("PartialOrd") .br()
+        .a_select_add_docs(Doc::Impl("partial_cmp".into())).span("partial_cmp() lt() le() gt() ge() |") .br()
+
+        .a("trait.Eq")                          .text("Eq |") .br()
+
+        .a("trait.Ord")                         .text("Ord") .br()
+        .a_select_add_docs(Doc::Impl("cmp".into()))   .span("cmp() |") .br()
+
+        .a("trait.Drop")                         .text("Drop") .br()
+        .a_select_add_docs(Doc::Impl("drop".into()))   .span("drop() |") .br()
+
+        .a("trait.Default")                       .text("Default") .br()
+        .a_select_add_docs(Doc::Impl("default".into()))   .span("default() |") .br()
+
+        .a("trait.Debug")                       .text("Debug (if T:Debug)") .br()
+        .a_select_add_docs(Doc::Impl("fmt".into()))   .span("fmt() |") .br()
+
+        .a("trait.AsRef")                       .text("AsRef") .br()
+        .a("trait.AsMut")                       .text("AsMut") .br()
+        .a_select_add_docs(Doc::Nav("as_ref".into(), "pr".into(), "pnnnnnnn".into())).span("as_ref() as_mut() |") .br()
+
+        .a("trait.From")                       .text("From") .br()
+        .a_select_add_docs(Doc::Nav("from-1".into(), "pr".into(), "pnnnnnnn".into())).span("from() |") .br()
+
+        .a("trait.Write")                       .text("Write") .br()
+        .a_select_add_docs(Doc::LastImpl("write".into()))   .span("write() write_all() flush() by_ref() .. |") .br()
         .finish(&mut r.vector, &mut section);
 
 }

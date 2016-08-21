@@ -1,5 +1,6 @@
 
 extern crate scraper;
+extern crate selectors;
 extern crate hyper;
 extern crate ego_tree;
 extern crate sha2;
@@ -53,7 +54,17 @@ fn main() {
     r.copy.add_doc_by_element("trait.Copy", sel("section#main"));
     r.clone.add_doc_by_element("trait.Clone", sel("section#main"));
     r.default.add_doc_by_element("trait.Default", sel("section#main"));
-
+    r.index.add_doc_by_element("trait.Index", sel("section#main"));
+    r.from.add_doc_by_element("trait.From", sel("section#main"));
+    r.borrow.add_doc_by_element("trait.Borrow", sel("section#main"));
+    r.borrow_mut.add_doc_by_element("trait.BorrowMut", sel("section#main"));
+    r.index_mut.add_doc_by_element("trait.IndexMut", sel("section#main"));
+    r.deref.add_doc_by_element("trait.Deref", sel("section#main"));
+    r.deref_mut.add_doc_by_element("trait.DerefMut", sel("section#main"));
+    r.drop.add_doc_by_element("trait.Drop", sel("section#main"));
+    r.asref.add_doc_by_element("trait.AsRef", sel("section#main"));
+    r.asmut.add_doc_by_element("trait.AsMut", sel("section#main"));
+    r.extend.add_doc_by_element("trait.Extend", sel("section#main"));
 
     builder.append_docs(r);
     builder.write();
@@ -158,9 +169,21 @@ impl Group {
     }
 }
 
+pub enum Doc {
+    /// The String is the methodname
+    Method(String),
+    /// The String is the name of the first method in the impl
+    Impl(String),
+    /// The String is the name of the first method in the impl
+    /// Use if this is the last impl in the rust docs.
+    LastImpl(String),
+    /// Extended Selection (methodname, nav to start, nav to end)
+    Nav(String, String, String)
+}
+
 pub struct MethodLine {
     /// (docid, methodname)
-    docids : Vec<(String, String)>,
+    docids : Vec<(String, Doc)>,
     buf : String,
     code_closed : bool,
     link_open : bool,
@@ -237,9 +260,16 @@ impl MethodLine {
         self
     }
 
+    /// Select doc via Doc enum
+    pub fn a_select_add_docs(mut self, sel : Doc) -> MethodLine {
+        let docid = Self::docid("xx");
+        self.docids.push((docid.clone(), sel ));
+        self.a(&docid)
+    }
+
     /// Start new link and include docs, specify id for later use
     pub fn a_add_docs_use_id(mut self, methodname : &str, docid : &str) -> MethodLine {
-        self.docids.push((docid.into(), methodname.into()));
+        self.docids.push((docid.into(), Doc::Method(methodname.into()) ));
         self.a(docid)
     }
 
@@ -248,6 +278,7 @@ impl MethodLine {
         let docid = Self::docid(methodname);
         self.a_add_docs_use_id(methodname, &docid)
     }
+
 
     fn docid(methodid : &str) -> String{
         format!("{}.{}", random::<u64>(), methodid)
@@ -302,7 +333,26 @@ impl MethodLine {
     /// Include docs
     pub fn doc(self, doc : &mut Reference) -> MethodLine {
         for ref docid_methodname in &self.docids {
-            doc.add_doc_for_method(&docid_methodname.0, &docid_methodname.1);
+            match docid_methodname.1 {
+                Doc::Method(ref methodname) => {
+                    doc.add_doc_for_method(&docid_methodname.0, &methodname);
+                },
+                Doc::Impl(ref firstmethodname) => {
+                    doc.add_doc_by_element_plus_domtraversal(&docid_methodname.0,
+                                        sel(&format!("h4#method\\.{}", firstmethodname)),
+                                        "pr", "pn");
+                },
+                Doc::LastImpl(ref firstmethodname) => {
+                    doc.add_doc_by_element_plus_domtraversal(&docid_methodname.0,
+                                        sel(&format!("h4#method\\.{}", firstmethodname)),
+                                        "pr", "prr");
+                },
+                Doc::Nav(ref methodname, ref action_to_start, ref action_to_end) => {
+                    doc.add_doc_by_element_plus_domtraversal(&docid_methodname.0,
+                                        sel(&format!("h4#method\\.{}", methodname)),
+                                        &action_to_start, &action_to_end);
+                },
+            }
         }
         self
     }
@@ -558,6 +608,38 @@ impl Reference {
         self.html.push(Self::make_div_endtag());
     }
 
+    /// Gets the HTML code from element `base`&actions_to_start to
+    /// element `base`&actions_to_end, excluding end
+    /// Useful for retrieving a paragraph within a larger section
+    /// actions_to_start and actions_to_end are strings given to nav(),
+    /// which will then traverse further through the dom tree
+    /// Use this if the element you want to reference is not distinguishable
+    /// by simple css selectors.
+    pub fn add_doc_by_element_plus_domtraversal(&mut self, id : &str,
+                                    base : Selector, actions_to_start : &str,
+                                    actions_to_end : &str) {
+        self.html.push(Self::make_div_starttag("outerdoc", id));
+        self.html.push(Self::make_div_starttag("docblock", id));
+
+        let base : ElementRef = self.document.select(&base).next().unwrap();
+
+        let start = nav(base, actions_to_start);
+        let end = nav(base, actions_to_end);
+
+        self.html.push(start.html());
+        for next in start.next_siblings() {
+            if let Some(nextref) = ElementRef::wrap(next) {
+                if &nextref == &end {
+                    break;
+                }
+                self.html.push(nextref.html());
+            }
+        }
+
+        self.html.push(Self::make_div_endtag());
+        self.html.push(Self::make_div_endtag());
+    }
+
     /// Gets the inner html of `element`
     pub fn add_doc_by_element(&mut self, id : &str, element : Selector) {
 
@@ -614,7 +696,23 @@ pub fn sel(selector : &str) -> Selector {
     Selector::parse(selector).expect(&format!("Selector {} not found.", selector))
 }
 
+use selectors::Element;
 
+/// Allows for additional navigation after finding an element with
+/// sel('section#main h1'). Each action is one char.
+pub fn nav<'a>(start : ElementRef<'a>, actions : &str) -> ElementRef<'a> {
+    let mut curr = start;
+    for c in actions.chars() {
+        let next =  match c {
+            'p' => curr.parent_element(),
+            'r' => curr.prev_sibling_element(),
+            'n' => curr.next_sibling_element(),
+            _   => Some(curr),
+        };
+        curr = next.expect(&format!("could not execute {} on {:?}", actions, start.text().collect::<String>()));
+    }
+    curr
+}
 
 pub struct References {
     pub vector : Reference,
@@ -635,6 +733,17 @@ pub struct References {
     pub clone : Reference,
     pub default : Reference,
     pub result : Reference,
+    pub index : Reference,
+    pub from : Reference,
+    pub borrow : Reference,
+    pub borrow_mut : Reference,
+    pub index_mut : Reference,
+    pub deref : Reference,
+    pub deref_mut : Reference,
+    pub drop : Reference,
+    pub asref : Reference,
+    pub asmut : Reference,
+    pub extend : Reference,
 }
 
 
@@ -659,7 +768,17 @@ impl References {
             clone : Reference::new("https://doc.rust-lang.org/std/clone/trait.Clone.html"),
             default : Reference::new("https://doc.rust-lang.org/std/default/trait.Default.html"),
             result : Reference::new("https://doc.rust-lang.org/std/result/enum.Result.html"),
-
+            index : Reference::new("https://doc.rust-lang.org/std/ops/trait.Index.html"),
+            from : Reference::new("https://doc.rust-lang.org/std/convert/trait.From.html"),
+            borrow : Reference::new("https://doc.rust-lang.org/std/borrow/trait.Borrow.html"),
+            borrow_mut : Reference::new("https://doc.rust-lang.org/std/borrow/trait.BorrowMut.html"),
+            index_mut : Reference::new("https://doc.rust-lang.org/std/ops/trait.IndexMut.html"),
+            deref : Reference::new("https://doc.rust-lang.org/std/ops/trait.Deref.html"),
+            deref_mut : Reference::new("https://doc.rust-lang.org/std/ops/trait.DerefMut.html"),
+            drop : Reference::new("https://doc.rust-lang.org/std/ops/trait.Drop.html"),
+            asref : Reference::new("https://doc.rust-lang.org/std/convert/trait.AsRef.html"),
+            asmut : Reference::new("https://doc.rust-lang.org/std/convert/trait.AsMut.html"),
+            extend : Reference::new("https://doc.rust-lang.org/std/iter/trait.Extend.html"),
         }
     }
 
@@ -682,6 +801,17 @@ impl References {
         builder.append_doc(self.clone);
         builder.append_doc(self.default);
         builder.append_doc(self.result);
+        builder.append_doc(self.index);
+        builder.append_doc(self.from);
+        builder.append_doc(self.borrow);
+        builder.append_doc(self.borrow_mut);
+        builder.append_doc(self.index_mut);
+        builder.append_doc(self.deref);
+        builder.append_doc(self.deref_mut);
+        builder.append_doc(self.drop);
+        builder.append_doc(self.asref);
+        builder.append_doc(self.asmut);
+        builder.append_doc(self.extend);
     }
 }
 
