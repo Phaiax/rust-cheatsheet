@@ -18,6 +18,7 @@ use rand::random;
 mod vector;
 mod hashmap;
 mod option;
+mod result;
 
 fn main() {
 
@@ -35,6 +36,10 @@ fn main() {
     let mut option_box = Group::new("{OPTION}");
     option::make(&mut r, &mut option_box);
     builder.append_group(option_box);
+
+    let mut result_box = Group::new("{RESULT}");
+    result::make(&mut r, &mut result_box);
+    builder.append_group(result_box);
 
     r.from_iter.add_doc_by_element("trait.FromIterator", sel("section#main"));
     r.into_iter.add_doc_by_element("trait.IntoIterator", sel("section#main"));
@@ -629,6 +634,7 @@ pub struct References {
     pub copy : Reference,
     pub clone : Reference,
     pub default : Reference,
+    pub result : Reference,
 }
 
 
@@ -652,6 +658,7 @@ impl References {
             copy : Reference::new("https://doc.rust-lang.org/std/marker/trait.Copy.html"),
             clone : Reference::new("https://doc.rust-lang.org/std/clone/trait.Clone.html"),
             default : Reference::new("https://doc.rust-lang.org/std/default/trait.Default.html"),
+            result : Reference::new("https://doc.rust-lang.org/std/result/enum.Result.html"),
 
         }
     }
@@ -674,6 +681,7 @@ impl References {
         builder.append_doc(self.copy);
         builder.append_doc(self.clone);
         builder.append_doc(self.default);
+        builder.append_doc(self.result);
     }
 }
 

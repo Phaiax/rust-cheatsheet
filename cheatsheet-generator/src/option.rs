@@ -4,7 +4,7 @@ pub fn make(r : &mut References, mut section : &mut Group) {
 
    // Refernce: add_method_line(id, methodname, format, details)
 
-    r.hm.add_doc_by_element("option.option", sel("section#main div.docblock"));
+    r.option.add_doc_by_element("option.option", sel("section#main div.docblock"));
 
     MethodLine::new().text( "let foo : Option<T> = Some(T::new());")
                      .finish(&mut r.option, &mut section);
